@@ -1,0 +1,79 @@
+############################ Required Input ############################
+
+# placeholders for input fastq files; if not specified at command line, pipeline will not run!
+reference: False
+gtf: False
+directory: False
+mode: None
+
+############################ HPC ############################
+
+# parameters for running on HPC
+cores: 1
+
+############################ STAR ############################
+
+## default parameters for STAR reference indexing; change as desired
+sjdbOverhang: 150
+sjdbGTFtag: Parent
+genomeSAindexNbases: 12
+
+## default parameters for STAR alignment; change as desired
+readFilesCommand: 'gunzip -c'
+genomeDir: ./
+outFilterType: BySJout
+outFilterMultimapNmax: 20
+alignSJoverhangMin: 8
+alignSJDBoverhangMin: 1
+outFilterMismatchNmax: 999
+outFilterMismatchNoverReadLmax: 0.04
+alignIntronMin: 20
+alignIntronMax: 1000000
+alignMatesGapMax: 1000000
+quantMode: GeneCounts
+
+############################ Hisat2 ############################
+
+## default parameters for Hisat2 alignment; change as desired
+minintronlen: 20
+maxintronlen: 500000
+
+############################ BWA ############################
+
+## default parameteres for bwa index; change as desired
+algorithm: 'bwtsw'
+
+############################ GATK Workflow ############################
+
+## default parameters for GATK's AddOrReplaceReadGroups tool
+pl: 'illumina'
+pu: 'LANLbyDefault'
+
+# default parameters for GATK's VariantFiltration -- SNPs
+QD_filter_snp: QD < 2.0
+FS_filter_snp: FS > 60.0
+MQ_filter_snp: MQ < 40.0
+SOR_filter_snp: SOR > 4.0
+MQRankSum_filter_snp: MQRankSum < -12.5
+ReadPosRankSum_filter_snp: ReadPosRankSum < -8.0
+
+# default parameters for GATK's VariantFiltration -- INDELs
+QD_filter_indel: QD < 2.0
+FS_filter_indel: FS > 60.0
+SOR_filter_indel: SOR > 4.0
+
+############################ Freebayes ############################
+
+# default parameters for freebayes variant calling method; change as desired
+chunksize: 100000
+ploidy: 2
+min_alternate_count: 2
+min_alternate_freq: 0.05
+min_coverage: 0
+min_map_qual: 1
+min_base_qual: 0
+
+
+
+
+

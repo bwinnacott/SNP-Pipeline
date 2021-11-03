@@ -1,0 +1,6 @@
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - gatk4=4.2.2.0
+  - samtools=1.13

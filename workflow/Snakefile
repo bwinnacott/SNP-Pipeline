@@ -1,0 +1,56 @@
+import os
+import sys
+import re
+
+# global configuration file
+configfile: "../config/config.yaml"
+
+# checking for program requirements; analysis will stop if any of reference, gtf, or sample directory are not provided
+if not config['reference']:
+    sys.exit('No reference file provided. Exiting program...')
+else:
+    ref = config['reference']
+
+if not config['gtf']:
+    sys.exit('No gene annotation file provided. Exiting program...')
+else:
+    gtf = config['gtf']
+
+if not config['directory']:
+    sys.exit('No fastq file directory provided. Exiting program...')
+else:
+    sample_dir = '../data/' + config['directory']
+
+if not config['mode']:
+    sys.exit("Sample processing mode not specified. Provide either 'RNA' or 'DNA' at command line or in config file under parameter 'mode'. Exiting program...")
+else:
+    mode = config['mode']
+
+# run utilities rule to gain access to helper functions
+include: "rules/utilities.smk"
+
+# extract basenames for all samples being run in analysis
+samples = get_sample_basenames(sample_dir)
+exts = get_sample_exts(sample_dir)
+
+# core of the pipeline
+if mode == 'RNA':
+    aligner = ['star','hisat2']
+else:
+    aligner = 'bwa'
+
+if mode == 'RNA':
+    include: "rules/star.smk"
+    include: "rules/hisat2.smk"
+elif mode == 'DNA':
+    include: "rules/bwa.smk"
+else:
+    sys.exit("Sample processing mode not compatible with pipeline. Please specify either 'RNA' or 'DNA'.")
+include: "rules/preprocess_bams.smk"
+include: "rules/bqsr.smk"
+include: "rules/call_variants.smk"
+
+rule all:
+    input:
+        expand('../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf',sample=samples,aligner=aligner),
+        expand('../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf',sample=samples,aligner=aligner)
