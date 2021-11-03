@@ -5,10 +5,7 @@ reference: False
 gtf: False
 directory: False
 mode: None
-
-############################ HPC ############################
-
-# parameters for running on HPC
+# default cores for rules; change as desired
 cores: 1
 
 ############################ STAR ############################
