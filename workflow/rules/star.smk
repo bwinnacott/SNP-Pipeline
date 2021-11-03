@@ -24,8 +24,7 @@ rule star_index:
 
 rule star_align:
     input:
-        directory(os.path.splitext(ref)[0] + '_star_index'),
-        refdir = '../resources/' + os.path.splitext(ref)[0] + '_star_index'
+        refdir = os.path.splitext(ref)[0] + '_star_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='star'),
         outdir = '../results/{sample}/star/star_output',
@@ -50,7 +49,7 @@ rule star_align:
         'cd {params.outdir} && '
         'STAR --runThreadN {threads} '
         '{params.Command} '
-        '--genomeDir ../../../{input.refdir} '
+        '--genomeDir ../../../../resources/{input.refdir} '
         '--readFilesIn {params.sample} '
         '--outFilterType {params.Type} '
         '--outFilterMultimapNmax {params.MultimapNmax} '

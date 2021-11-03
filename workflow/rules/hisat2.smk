@@ -16,7 +16,7 @@ rule hisat2_index:
 rule hisat2_align:
     input:
         gtf = '../resources/' + gtf,
-        refdir = '../resources/' + os.path.splitext(ref)[0] + '_hisat2_index'
+        refdir = os.path.splitext(ref)[0] + '_hisat2_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='hisat2'),
         outdir = '../results/{sample}/hisat2/hisat2_output',
@@ -34,7 +34,7 @@ rule hisat2_align:
         'ss_script=$(which hisat2_extract_splice_sites.py) && '
         '$ss_script ../../../{input.gtf} > splicesites.txt && '
         'hisat2 -p {threads} '
-        '-x ../../../{input.refdir}/{params.prefix} '
+        '-x ../../../../resources/{input.refdir}/{params.prefix} '
         '{params.sample} '
         '--min-intronlen {params.minintronlen} '
         '--max-intronlen {params.maxintronlen} '
