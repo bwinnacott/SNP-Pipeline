@@ -7,15 +7,15 @@ rule star_index:
         sjdbGTFtag = config['sjdbGTFtag'],
         genomeSAindexNbases = config['genomeSAindexNbases']
     output:
-        directory(os.path.splitext(ref)[0] + '_star_index')
+        directory('../resources/' + os.path.splitext(ref)[0] + '_star_index')
     conda:
         "../envs/star.yaml"
     threads: 8
     shell:
-        'mkdir ../resources/{output} && '
+        'mkdir {output} && '
         'STAR --runThreadN {threads} '
         '--runMode genomeGenerate '
-        '--genomeDir ../resources/{output} '
+        '--genomeDir {output} '
         '--genomeFastaFiles {input.ref} '
         '--sjdbGTFfile {input.gtf} '
         '--sjdbOverhang {params.sjdbOverhang} '
@@ -24,7 +24,7 @@ rule star_index:
 
 rule star_align:
     input:
-        refdir = os.path.splitext(ref)[0] + '_star_index'
+        refdir = '../resources/' + os.path.splitext(ref)[0] + '_star_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='star'),
         outdir = '../results/{sample}/star/star_output',
@@ -49,7 +49,7 @@ rule star_align:
         'cd {params.outdir} && '
         'STAR --runThreadN {threads} '
         '{params.Command} '
-        '--genomeDir ../../../../resources/{input.refdir} '
+        '--genomeDir ../../../{input.refdir} '
         '--readFilesIn {params.sample} '
         '--outFilterType {params.Type} '
         '--outFilterMultimapNmax {params.MultimapNmax} '

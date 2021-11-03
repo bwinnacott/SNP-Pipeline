@@ -1,3 +1,4 @@
+# slurm submission arguments
 cluster:
   mkdir -p logs/{rule} &&
   sbatch
@@ -9,12 +10,19 @@ cluster:
     --time={resources.time}
     --job-name=smk-{rule}-{wildcards}
     --output=logs/{rule}/{rule}-{wildcards}-%j.out
+# sets default resources for all jobs submitted
 default-resources:
   - partition=tb
+  - cpus=1
   - mem_mb=5000
   - nodes=1
   - ntasks=1
   - time="10:00:00"
+# sets maximum resources allocated to all jobs submitted at the same time
+resources:
+  - cpus=30
+  - mem_mb=75000
+# other snakemake specific default arguments
 restart-times: 3
 max-jobs-per-second: 10
 max-status-checks-per-second: 1

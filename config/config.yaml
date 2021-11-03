@@ -16,8 +16,6 @@ sjdbGTFtag: Parent
 genomeSAindexNbases: 12
 
 ## default parameters for STAR alignment; change as desired
-readFilesCommand: 'gunzip -c'
-genomeDir: ./
 outFilterType: BySJout
 outFilterMultimapNmax: 20
 alignSJoverhangMin: 8

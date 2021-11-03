@@ -4,19 +4,19 @@ rule hisat2_index:
     params:
         prefix = os.path.splitext(ref)[0]
     output: 
-        directory(os.path.splitext(ref)[0] + '_hisat2_index')
+        directory('../resources/' + os.path.splitext(ref)[0] + '_hisat2_index')
     conda:
         "../envs/hisat2.yaml"
     threads: 8
     shell:
-        #'mkdir ../resources/{output} && '
+        'mkdir {output} && '
         'hisat2-build -p {threads} '
-        '{input.ref} ../resources/{output}/{params.prefix}'
+        '{input.ref} {output}/{params.prefix}'
 
 rule hisat2_align:
     input:
         gtf = '../resources/' + gtf,
-        refdir = os.path.splitext(ref)[0] + '_hisat2_index'
+        refdir = '../resources/' + os.path.splitext(ref)[0] + '_hisat2_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='hisat2'),
         outdir = '../results/{sample}/hisat2/hisat2_output',
@@ -34,7 +34,7 @@ rule hisat2_align:
         'ss_script=$(which hisat2_extract_splice_sites.py) && '
         '$ss_script ../../../{input.gtf} > splicesites.txt && '
         'hisat2 -p {threads} '
-        '-x ../../../../resources/{input.refdir}/{params.prefix} '
+        '-x ../../../{input.refdir}/{params.prefix} '
         '{params.sample} '
         '--min-intronlen {params.minintronlen} '
         '--max-intronlen {params.maxintronlen} '

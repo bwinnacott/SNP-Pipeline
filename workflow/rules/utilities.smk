@@ -46,12 +46,12 @@ def get_star_readfile_command(wildcards):
     for ext in exts:
         if os.path.exists(sample_dir + '/' + wildcards.sample + '_R1.' + ext):
             if ext.endswith('.gz'):
-                return '--readFilesCommand gunzip -c'
+                return '--readFilesCommand zcat'
             else:
                 return ''
         elif os.path.exists(sample_dir + '/' + wildcards.sample + '.' + ext):
             if ext.endswith('.gz'):
-                return '--readFilesCommand gunzip -c'
+                return '--readFilesCommand zcat'
             else:
                 return ''
 
