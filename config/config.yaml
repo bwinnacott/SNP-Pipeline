@@ -2,9 +2,10 @@
 
 # placeholders for input fastq files; if not specified at command line, pipeline will not run!
 reference: False
-gtf: False
 directory: False
 mode: None
+# annotation only required for RNA mode; will run in DNA mode without specifying file
+annotation: False
 # default cores for rules; change as desired
 cores: 1
 

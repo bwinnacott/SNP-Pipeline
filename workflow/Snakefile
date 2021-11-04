@@ -5,26 +5,26 @@ import re
 # global configuration file
 configfile: "../config/config.yaml"
 
-# checking for program requirements; analysis will stop if any of reference, gtf, or sample directory are not provided
+# checking for program requirements; analysis will stop if any of reference, annotation, or sample directory are not provided
 if not config['reference']:
     sys.exit('No reference file provided. Exiting program...')
 else:
     ref = config['reference']
 
-if not config['gtf']:
+if not config['mode']:
+    sys.exit("Sample processing mode not specified. Provide either 'RNA' or 'DNA' at command line or in config file under parameter 'mode'. Exiting program...")
+else:
+    mode = config['mode']
+
+if not config['annotation'] and mode == 'RNA':
     sys.exit('No gene annotation file provided. Exiting program...')
 else:
-    gtf = config['gtf']
+    annotation = config['annotation']
 
 if not config['directory']:
     sys.exit('No fastq file directory provided. Exiting program...')
 else:
     sample_dir = '../data/' + config['directory']
-
-if not config['mode']:
-    sys.exit("Sample processing mode not specified. Provide either 'RNA' or 'DNA' at command line or in config file under parameter 'mode'. Exiting program...")
-else:
-    mode = config['mode']
 
 # run utilities rule to gain access to helper functions
 include: "rules/utilities.smk"

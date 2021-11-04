@@ -1,21 +1,21 @@
 rule bwa_index:
     input:
-        ref = ref
+        ref = '../resources/' + ref
     params:
         algorithm = config['algorithm']
     output:
-        directory(os.path.splitext(ref)[0] + '_bwa_index')
+        directory('../resources/' + os.path.splitext(ref)[0] + '_bwa_index')
     conda:
         "../envs/bwa.yaml"
     shell:
-        'mkdir ../resources/{output} && '
-        'cd ../resources/{output} && '
+        'mkdir {output} && '
+        'cd {output} && '
         'bwa index -a {params.algorithm} {input.ref}'
 
 rule bwa_mem:
     input:
-        refdir = os.path.splitext(ref)[0] + '_bwa_index'
-        ref = ref
+        refdir = '../resources/' + os.path.splitext(ref)[0] + '_bwa_index'
+        ref = '../resources/' + ref
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='bwa'),
         outdir = '../results/{sample}/bwa',
@@ -30,7 +30,7 @@ rule bwa_mem:
         'cd {params.outdir} && '
         'bwa mem -t {threads} '
         '-R {params.RG} '
-        '../../resources/{input.ref} '
+        '../{input.ref} '
         '{params.sample} > {wildcards.sample}.sam && '
         'samtools view -bS {wildcards.sample}.sam > {wildcards.sample}.bam && '
         'samtools sort {wildcards.sample}.bam -o {wildcards.sample}_sorted.bam -T sort && '

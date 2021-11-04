@@ -1,7 +1,7 @@
 rule star_index:
     input:
         ref = '../resources/' + ref,
-        gtf = '../resources/' + gtf
+        annotation = '../resources/' + annotation
     params:
         sjdbOverhang = config['sjdbOverhang'],
         sjdbGTFtag = config['sjdbGTFtag'],
@@ -17,7 +17,7 @@ rule star_index:
         '--runMode genomeGenerate '
         '--genomeDir {output} '
         '--genomeFastaFiles {input.ref} '
-        '--sjdbGTFfile {input.gtf} '
+        '--sjdbGTFfile {input.annotation} '
         '--sjdbOverhang {params.sjdbOverhang} '
         '--sjdbGTFtagExonParentTranscript {params.sjdbGTFtag} '
         '--genomeSAindexNbases {params.genomeSAindexNbases}'
