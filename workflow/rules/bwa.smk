@@ -1,25 +1,33 @@
 rule bwa_index:
     input:
         ref = '../resources/' + ref
-    params:
+    params: 
         algorithm = config['algorithm']
     output:
-        directory('../resources/' + os.path.splitext(ref)[0] + '_bwa_index')
+        '../resources/' + ref + '.amb',
+        '../resources/' + ref + '.ann',
+        '../resources/' + ref + '.bwt',
+        '../resources/' + ref + '.pac',
+        '../resources/' + ref + '.sa'
     conda:
         "../envs/bwa.yaml"
     shell:
-        'mkdir {output} && '
-        'cd {output} && '
         'bwa index -a {params.algorithm} {input.ref}'
 
 rule bwa_mem:
     input:
-        refdir = '../resources/' + os.path.splitext(ref)[0] + '_bwa_index'
+        '../resources/' + ref + '.amb',
+        '../resources/' + ref + '.ann',
+        '../resources/' + ref + '.bwt',
+        '../resources/' + ref + '.pac',
+        '../resources/' + ref + '.sa',
         ref = '../resources/' + ref
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='bwa'),
         outdir = '../results/{sample}/bwa',
-        RG = "@RG\tID:'{sample}'\tSM:'{sample}'\tPL:{config['pl']}\tLB:{os.path.splitext(ref)[0]}\tPU:{config['lb']}"
+        PL = config['pl'],
+        LB = os.path.splitext(ref)[0],
+        PU = config['pu']
     output:
         '../results/{sample}/bwa/{sample}_sorted.bam'
     conda:
@@ -29,9 +37,9 @@ rule bwa_mem:
         'mkdir -p {params.outdir} && '
         'cd {params.outdir} && '
         'bwa mem -t {threads} '
-        '-R {params.RG} '
-        '../{input.ref} '
+        '-R "@RG\\tID:{wildcards.sample}\\tSM:{wildcards.sample}\\tPL:{params.PL}\\tLB:{params.LB}\\tPU:{params.PU}" '
+        '../../{input.ref} '
         '{params.sample} > {wildcards.sample}.sam && '
         'samtools view -bS {wildcards.sample}.sam > {wildcards.sample}.bam && '
         'samtools sort {wildcards.sample}.bam -o {wildcards.sample}_sorted.bam -T sort && '
-        'rm {wildcards.sample}.bam && cd ../../workflow'
+        'rm {wildcards.sample}.bam && cd ../../../workflow'
