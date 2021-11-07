@@ -62,14 +62,17 @@ SOR_filter_indel: SOR > 4.0
 
 # default parameters for freebayes variant calling method; change as desired
 chunksize: 100000
-ploidy: 2
-min_alternate_count: 2
+ploidy: 1
+min_alternate_count: 5
 min_alternate_freq: 0.05
-min_coverage: 0
-min_map_qual: 1
-min_base_qual: 0
+min_coverage: 10
+min_map_qual: 20
+min_base_qual: 20
 
+############################ Variant Intersection ############################
 
-
-
+# number of files variant must be at least present in to output to final call set
+nfiles: 2
+# when True, only 1 output vcf file will be written (GATK by default); when False, all files are subset and output
+output_combined: True
 

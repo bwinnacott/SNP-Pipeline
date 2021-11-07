@@ -49,8 +49,8 @@ else:
 include: "rules/preprocess_bams.smk"
 include: "rules/bqsr.smk"
 include: "rules/call_variants.smk"
+include: "rules/merge.smk"
 
 rule all:
     input:
-        expand('../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf',sample=samples,aligner=aligner),
-        expand('../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf',sample=samples,aligner=aligner)
+        expand('../results/{sample}/{aligner}/final_calls/',sample=samples,aligner=aligner)

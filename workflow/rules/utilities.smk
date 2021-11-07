@@ -67,3 +67,9 @@ def get_bam_by_mode(wildcards,ind=False):
         return '../results/' + wildcards.sample + '/' + wildcards.aligner + '/bam_preprocessing/dedup_rna_reads_' + wildcards.sample + ext
     else:
         return '../results/' + wildcards.sample + '/' + wildcards.aligner + '/bam_preprocessing/dedup_reads_' + wildcards.sample + ext
+
+def get_intersection_output(wildcards):
+    if config['output_combined']:
+        return '-w1 -o ../results/' + wildcards.sample + '/' + wildcards.aligner + '/final_calls/final_calls.vcf'
+    else:
+        return '-p ../results/' + wildcards.sample + '/' + wildcards.aligner + '/final_calls'
