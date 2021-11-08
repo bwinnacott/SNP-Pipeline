@@ -32,6 +32,7 @@ include: "rules/utilities.smk"
 # extract basenames for all samples being run in analysis
 samples = get_sample_basenames(sample_dir)
 exts = get_sample_exts(sample_dir)
+callers = get_callers()
 
 # core of the pipeline
 if mode == 'RNA':
@@ -47,10 +48,13 @@ elif mode == 'DNA':
 else:
     sys.exit("Sample processing mode not compatible with pipeline. Please specify either 'RNA' or 'DNA'.")
 include: "rules/preprocess_bams.smk"
-include: "rules/bqsr.smk"
+
+if config['apply_bqsr']:
+    include: "rules/bqsr.smk"
+    
 include: "rules/call_variants.smk"
 include: "rules/merge.smk"
 
 rule all:
     input:
-        expand('../results/{sample}/{aligner}/final_calls/',sample=samples,aligner=aligner)
+        expand('../results/{sample}/final_calls/',sample=samples)

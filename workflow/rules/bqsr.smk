@@ -1,6 +1,6 @@
 rule HaplotypeCaller:
     input:
-        bam = get_bam_by_mode,
+        bam = get_input_bam,
         ref = '../resources/' + ref
     output:
         '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf'
@@ -93,7 +93,7 @@ rule SelectVariants_pass2:
 
 rule BaseRecalibrator:
     input:
-        bam = get_bam_by_mode,
+        bam = get_input_bam,
         bqsr_snps = '../results/{sample}/{aligner}/bqsr/bqsr_snps_{sample}.vcf',
         bqsr_indels = '../results/{sample}/{aligner}/bqsr/bqsr_indels_{sample}.vcf',
         ref = '../resources/' + ref
@@ -112,11 +112,12 @@ rule BaseRecalibrator:
 
 rule ApplyBQSR:
     input:
-        bam = get_bam_by_mode,
+        bam = get_input_bam,
         bqsr = '../results/{sample}/{aligner}/bqsr/recal_data_{sample}.table',
         ref = '../resources/' + ref
     output:
-        '../results/{sample}/{aligner}/bqsr/recal_reads_{sample}.bam'
+        '../results/{sample}/{aligner}/bqsr/recal_reads_{sample}.bam',
+        '../results/{sample}/{aligner}/bqsr/recal_reads_{sample}.bai'
     conda:
         "../envs/gatk.yaml"
     shell:

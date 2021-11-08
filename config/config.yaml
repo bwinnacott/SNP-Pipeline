@@ -9,6 +9,14 @@ annotation: False
 # default cores for rules; change as desired
 cores: 1
 
+############################ Overall Pipeline Parameters ############################
+
+# defaults to applying all callers; change to False to prevent any caller from running
+use_mutect2: True
+use_freebayes: True
+# set to True to apply base quality score recalibration
+apply_bqsr: True
+
 ############################ STAR ############################
 
 ## default parameters for STAR reference indexing; change as desired

@@ -1,30 +1,24 @@
 rule compress_and_index:
     input:
-        '../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf',
-        '../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf'
+        '../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf'
     output:
-        '../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf.gz',
-        '../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf.gz',
-        '../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf.gz.tbi',
-        '../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf.gz.tbi'
+        '../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf.gz',
+        '../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf.gz.tbi'
     conda:
         "../envs/merge.yaml"
     threads: 1
     shell:
-        'bgzip {input}[0] && '
-        'bgzip {input}[1] && '
-        'tabix {output}[0] && '
-        'tabix {output}[1]'
+        'bgzip {input} && '
+        'tabix {output}'
 
 rule intersection:
     input:
-        '../results/{sample}/{aligner}/Mutect2/FilteredMutectVariants_{sample}.vcf.gz',
-        '../results/{sample}/{aligner}/Freebayes/freebayes_variants_{sample}.vcf.gz'
+        expand('../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf.gz',aligner=aligner,caller=callers,allow_missing=True)
     params:
         nfiles = config['nfiles'],
         output = get_intersection_output
     output:
-        directory('../results/{sample}/{aligner}/final_calls/')
+        directory('../results/{sample}/final_calls/')
     conda:
         "../envs/merge.yaml"
     threads: 1
