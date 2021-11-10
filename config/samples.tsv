@@ -1,5 +1,2 @@
-File	Sample_group	Condition	R1	R2
-test1.fastq.gz	1	Treatment	True	NA
-test2_R2.fq.gz	2	Treatment	NA	True
-test2_R1.fq.gz	2	Treatment	True	NA
-test3.fastq	3	Treatment	True	NA
+Sample_name	Condition
+
