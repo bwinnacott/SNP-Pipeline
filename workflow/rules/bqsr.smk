@@ -1,7 +1,7 @@
 rule HaplotypeCaller:
     input:
         bam = get_input_bam,
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     output:
         '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf'
     conda:
@@ -17,7 +17,7 @@ rule HaplotypeCaller:
 rule SelectVariants_pass1:
     input:
         vcf = '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf',
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     output:
         '../results/{sample}/{aligner}/bqsr/raw_snps_{sample}.vcf',
         '../results/{sample}/{aligner}/bqsr/raw_indels_{sample}.vcf'
@@ -39,7 +39,7 @@ rule VariantFiltration:
     input:
         snps_vcf = '../results/{sample}/{aligner}/bqsr/raw_snps_{sample}.vcf',
         indels_vcf = '../results/{sample}/{aligner}/bqsr/raw_indels_{sample}.vcf',
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     params:
         QD_filter_snp = config['QD_filter_snp'],
         FS_filter_snp = config['FS_filter_snp'],
@@ -96,7 +96,7 @@ rule BaseRecalibrator:
         bam = get_input_bam,
         bqsr_snps = '../results/{sample}/{aligner}/bqsr/bqsr_snps_{sample}.vcf',
         bqsr_indels = '../results/{sample}/{aligner}/bqsr/bqsr_indels_{sample}.vcf',
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     output:
         '../results/{sample}/{aligner}/bqsr/recal_data_{sample}.table'
     conda:
@@ -114,7 +114,7 @@ rule ApplyBQSR:
     input:
         bam = get_input_bam,
         bqsr = '../results/{sample}/{aligner}/bqsr/recal_data_{sample}.table',
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     output:
         '../results/{sample}/{aligner}/bqsr/recal_reads_{sample}.bam',
         '../results/{sample}/{aligner}/bqsr/recal_reads_{sample}.bai'
@@ -124,4 +124,4 @@ rule ApplyBQSR:
         'gatk ApplyBQSR -R {input.ref} '
         '-I {input.bam} '
         '-bqsr {input.bqsr} '
-        '-O {output}'
+        '-O {output[0]}'

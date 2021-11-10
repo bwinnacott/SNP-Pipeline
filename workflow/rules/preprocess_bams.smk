@@ -1,9 +1,9 @@
 rule index_ref:
     input:
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     output:
-        '../resources/' + os.path.splitext(ref)[0] + '.dict',
-        '../resources/' + ref + '.fai'
+        ref_dir + os.path.splitext(ref)[0] + '.dict',
+        ref_dir + ref + '.fai'
     conda:
         "../envs/gatk.yaml"
     shell:
@@ -12,10 +12,10 @@ rule index_ref:
 
 rule mark_duplicates:
     input:
-        '../resources/' + os.path.splitext(ref)[0] + '.dict',
-        '../resources/' + ref + '.fai',
+        ref_dir + os.path.splitext(ref)[0] + '.dict',
+        ref_dir + ref + '.fai',
         bam = lambda wc: get_aligner_directory(wc) + '{sample}_sorted.bam',
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     params:
         out_dir = '../results/{sample}/{aligner}/bam_preprocessing'
     output:
@@ -35,7 +35,7 @@ rule mark_duplicates:
 if mode == 'RNA':
     rule split_cigar_reads:
         input:
-            ref = '../resources/' + ref,
+            ref = ref_dir + ref,
             bam = '../results/{sample}/{aligner}/bam_preprocessing/dedup_reads_{sample}.bam'
         output:
             '../results/{sample}/{aligner}/bam_preprocessing/dedup_split_reads_{sample}.bam'

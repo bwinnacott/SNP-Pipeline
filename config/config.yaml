@@ -1,5 +1,7 @@
 ############################ Required Input ############################
 
+samples: config/samples.tsv
+
 # placeholders for input fastq files; if not specified at command line, pipeline will not run!
 reference: False
 directory: False
@@ -70,7 +72,7 @@ SOR_filter_indel: SOR > 4.0
 
 # default parameters for freebayes variant calling method; change as desired
 chunksize: 100000
-ploidy: 1
+ploidy: 2
 min_alternate_count: 5
 min_alternate_freq: 0.05
 min_coverage: 10

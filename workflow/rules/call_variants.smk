@@ -2,7 +2,7 @@ if config['use_mutect2']:
     rule Mutect2:
         input:
             bam = lambda wc: get_input_bam(wc,calling=True),
-            ref = '../resources/' + ref
+            ref = ref_dir + ref
         output:
             '../results/{sample}/{aligner}/Mutect2/raw_variants_recal_{sample}.vcf',
             '../results/{sample}/{aligner}/Mutect2/CollectDirectionalCounts_{sample}.tar.gz'
@@ -34,7 +34,7 @@ if config['use_mutect2']:
         input:
             read_model = '../results/{sample}/{aligner}/Mutect2/ReadOrientationModel_{sample}.tar.gz',
             var_recal = '../results/{sample}/{aligner}/Mutect2/raw_variants_recal_{sample}.vcf',
-            ref = '../resources/' + ref
+            ref = ref_dir + ref
         output:
             '../results/{sample}/{aligner}/Mutect2/final_Mutect2_variants_{sample}.vcf'
         conda:
@@ -50,7 +50,7 @@ if config['use_mutect2']:
 if config['use_freebayes']:
     rule Freebayes:
         input:
-            ref = '../resources/' + ref,
+            ref = ref_dir + ref,
             bam = lambda wc: get_input_bam(wc,calling=True),
             index = lambda wc: get_input_bam(wc,calling=True,ind=True)
         params:

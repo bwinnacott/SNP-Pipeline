@@ -1,14 +1,14 @@
 rule bwa_index:
     input:
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     params: 
         algorithm = config['algorithm']
     output:
-        '../resources/' + ref + '.amb',
-        '../resources/' + ref + '.ann',
-        '../resources/' + ref + '.bwt',
-        '../resources/' + ref + '.pac',
-        '../resources/' + ref + '.sa'
+        ref_dir + ref + '.amb',
+        ref_dir + ref + '.ann',
+        ref_dir + ref + '.bwt',
+        ref_dir + ref + '.pac',
+        ref_dir + ref + '.sa'
     conda:
         "../envs/bwa.yaml"
     shell:
@@ -16,12 +16,12 @@ rule bwa_index:
 
 rule bwa_mem:
     input:
-        '../resources/' + ref + '.amb',
-        '../resources/' + ref + '.ann',
-        '../resources/' + ref + '.bwt',
-        '../resources/' + ref + '.pac',
-        '../resources/' + ref + '.sa',
-        ref = '../resources/' + ref
+        ref_dir + ref + '.amb',
+        ref_dir + ref + '.ann',
+        ref_dir + ref + '.bwt',
+        ref_dir + ref + '.pac',
+        ref_dir + ref + '.sa',
+        ref = ref_dir + ref
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='bwa'),
         outdir = '../results/{sample}/bwa',

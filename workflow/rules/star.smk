@@ -1,13 +1,13 @@
 rule star_index:
     input:
-        ref = '../resources/' + ref,
-        annotation = '../resources/' + annotation
+        ref = ref_dir + ref,
+        annotation = ref_dir + annotation
     params:
         sjdbOverhang = config['sjdbOverhang'],
         sjdbGTFtag = config['sjdbGTFtag'],
         genomeSAindexNbases = config['genomeSAindexNbases']
     output:
-        directory('../resources/' + os.path.splitext(ref)[0] + '_star_index')
+        directory(ref_dir + os.path.splitext(ref)[0] + '_star_index')
     conda:
         "../envs/star.yaml"
     threads: 8
@@ -24,7 +24,7 @@ rule star_index:
 
 rule star_align:
     input:
-        refdir = '../resources/' + os.path.splitext(ref)[0] + '_star_index'
+        refdir = ref_dir + os.path.splitext(ref)[0] + '_star_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='star'),
         outdir = '../results/{sample}/star/star_output',

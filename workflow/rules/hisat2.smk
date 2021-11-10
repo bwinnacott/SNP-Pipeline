@@ -1,6 +1,6 @@
 rule hisat2_index:
     input:
-        ref = '../resources/' + ref
+        ref = ref_dir + ref
     params:
         prefix = os.path.splitext(ref)[0]
     output: 
@@ -15,8 +15,8 @@ rule hisat2_index:
 
 rule hisat2_align:
     input:
-        annotation = '../resources/' + annotation,
-        refdir = '../resources/' + os.path.splitext(ref)[0] + '_hisat2_index'
+        annotation = ref_dir + annotation,
+        refdir = ref_dir + os.path.splitext(ref)[0] + '_hisat2_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='hisat2'),
         outdir = '../results/{sample}/hisat2/hisat2_output',

@@ -9,7 +9,7 @@ rule compress_and_index:
     threads: 1
     shell:
         'bgzip {input} && '
-        'tabix {output}'
+        'tabix {output[0]}'
 
 rule intersection:
     input:
@@ -23,4 +23,5 @@ rule intersection:
         "../envs/merge.yaml"
     threads: 1
     shell:
+        'mkdir -p {output} && '
         'bcftools isec -n +{params.nfiles} {params.output} {input}'
