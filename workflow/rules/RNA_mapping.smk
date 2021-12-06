@@ -1,27 +1,3 @@
-rule star_index:
-    input:
-        ref = ref_dir + ref,
-        annotation = ref_dir + annotation
-    params:
-        sjdbOverhang = config['sjdbOverhang'],
-        sjdbGTFtag = config['sjdbGTFtag'],
-        genomeSAindexNbases = config['genomeSAindexNbases']
-    output:
-        directory(ref_dir + os.path.splitext(ref)[0] + '_star_index')
-    conda:
-        "../envs/star.yaml"
-    threads: 8
-    shell:
-        'mkdir {output} && '
-        'STAR --runThreadN {threads} '
-        '--runMode genomeGenerate '
-        '--genomeDir {output} '
-        '--genomeFastaFiles {input.ref} '
-        '--sjdbGTFfile {input.annotation} '
-        '--sjdbOverhang {params.sjdbOverhang} '
-        '--sjdbGTFtagExonParentTranscript {params.sjdbGTFtag} '
-        '--genomeSAindexNbases {params.genomeSAindexNbases}'
-
 rule star_align:
     input:
         refdir = ref_dir + os.path.splitext(ref)[0] + '_star_index'
@@ -43,7 +19,8 @@ rule star_align:
         '../results/{sample}/star/star_output/{sample}_sorted.bam'
     conda:
         "../envs/star.yaml"
-    threads: 8
+    threads:
+        max(config['cores'],config['star_align_cores'])
     shell:
         'mkdir -p {params.outdir} && '
         'cd {params.outdir} && '
@@ -60,7 +37,40 @@ rule star_align:
         '--alignIntronMin {params.IntronMin} '
         '--alignIntronMax {params.IntronMax} '
         '--alignMatesGapMax {params.MatesGapMax} '
+        '--twopassMode Basic '
         '--outSAMtype BAM SortedByCoordinate '
         '--quantMode {params.quantMode} && '
         'mv Aligned.sortedByCoord.out.bam {wildcards.sample}_sorted.bam && cd ../../../../workflow'
 
+rule hisat2_align:
+    input:
+        annotation = ref_dir + annotation,
+        refdir = ref_dir + os.path.splitext(ref)[0] + '_hisat2_index'
+    params:
+        sample = lambda wc: get_aligner_input(wc,aligner='hisat2'),
+        outdir = '../results/{sample}/hisat2/hisat2_output',
+        prefix = os.path.splitext(ref)[0],
+        minintronlen = config['minintronlen'],
+        maxintronlen = config['maxintronlen']
+    output:
+        '../results/{sample}/hisat2/hisat2_output/{sample}_sorted.bam'
+    conda:
+        "../envs/hisat2.yaml"
+    threads:
+        max(config['cores'],config['hisat_align_cores'])
+    shell:
+        'mkdir -p {params.outdir} && '
+        'cd {params.outdir} && '
+        'ss_script=$(which hisat2_extract_splice_sites.py) && '
+        '$ss_script ../../../{input.annotation} > splicesites.txt && '
+        'hisat2 -p {threads} '
+        '-x ../../../{input.refdir}/{params.prefix} '
+        '{params.sample} '
+        '--min-intronlen {params.minintronlen} '
+        '--max-intronlen {params.maxintronlen} '
+        '--known-splicesite-infile splicesites.txt '
+        '-S {wildcards.sample}.sam && '
+        'samtools view -bS {wildcards.sample}.sam > {wildcards.sample}.bam && '
+        'rm {wildcards.sample}.sam && '
+        'samtools sort {wildcards.sample}.bam -o {wildcards.sample}_sorted.bam && '
+        'rm {wildcards.sample}.bam && cd ../../../../workflow'

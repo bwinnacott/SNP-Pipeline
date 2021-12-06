@@ -10,14 +10,13 @@ cluster:
     --time={resources.time}
     --job-name=smk-{rule}-{wildcards}
     --output=logs/{rule}/{rule}-{wildcards}-%j.out
-# sets default resources for all jobs submitted
+# sets default resources for all jobs submitted; resources defined in rule will override these
 default-resources:
   - partition=tb
-  - cpus=1
-  - mem_mb=5000
+  - mem_mb=10000
   - nodes=1
   - ntasks=1
-  - time="10:00:00"
+  - time="3-00:00:00"
 # sets maximum resources allocated to all jobs submitted at the same time
 resources:
   - cpus=30
@@ -28,7 +27,7 @@ max-jobs-per-second: 10
 max-status-checks-per-second: 1
 local-cores: 1
 latency-wait: 60
-jobs: 15
+jobs: 10
 keep-going: True
 rerun-incomplete: True
 printshellcmds: True

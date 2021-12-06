@@ -16,6 +16,7 @@ rule bwa_index:
 
 rule bwa_mem:
     input:
+        sample_dir + '/running_pipeline.txt',
         ref_dir + ref + '.amb',
         ref_dir + ref + '.ann',
         ref_dir + ref + '.bwt',
@@ -32,7 +33,8 @@ rule bwa_mem:
         '../results/{sample}/bwa/{sample}_sorted.bam'
     conda:
         "../envs/bwa.yaml"
-    threads: 8
+    threads:
+        max(config['cores'],config['bwa_mem_cores'])
     shell:
         'mkdir -p {params.outdir} && '
         'cd {params.outdir} && '
@@ -41,5 +43,6 @@ rule bwa_mem:
         '../../{input.ref} '
         '{params.sample} > {wildcards.sample}.sam && '
         'samtools view -bS {wildcards.sample}.sam > {wildcards.sample}.bam && '
+        'rm {wildcards.sample}.sam && '
         'samtools sort {wildcards.sample}.bam -o {wildcards.sample}_sorted.bam -T sort && '
         'rm {wildcards.sample}.bam && cd ../../../workflow'

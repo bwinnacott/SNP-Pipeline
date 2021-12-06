@@ -1,9 +1,23 @@
-import pandas as pd
 import os
 import re
 
-def get_samples():
-    
+rule get_sample_info:
+    output:
+        temp(sample_dir + '/running_pipeline.txt')
+    run:
+        with open(sample_dir + '/running_pipeline.txt','w') as f:
+            pass
+        
+        samples_df = pd.read_csv(config['samples'],sep='\t').set_index('Sample_name')
+        samples = samples_df.index.tolist()
+        #storage.store('samples',samples)
+        for sample in samples:
+            sample_info = samples_df.loc[sample,['R1','R2']]
+            for f in sample_info[~pd.isna(sample_info)]:
+                assert os.path.exists(sample_dir + '/' + f), (f'The file {f} associated with {sample} in "samples.tsv" is not \
+present in the specified directory ({sample_dir}). Please fix before proceeding. Exiting...')
+
+            storage.store(sample,[sample_info[0],sample_info[1]])
 
 def get_resource_file(ref_dir,type=None):
     ref_exts = tuple(['.fasta','.fa','.fasta.gz','.fa.gz'])
@@ -13,38 +27,17 @@ def get_resource_file(ref_dir,type=None):
             return f
         elif f.endswith(ann_exts) and type == 'gtf':
             return f
+        elif f.endswith('.gz') and type == 'gtf':
+            sys.exit('Annotation file is compressed. Uncompress file before restarting pipeline. Exiting...')
         else:
             continue
     
     if type == 'fasta':
-        sys.exit('Reference fasta file not detected. Ensure file extension is either of ".fa" or ".fasta". Exiting...')
+        sys.exit('Reference fasta file not detected. Ensure file extension is either of ".fa" or ".fasta" and \
+exists within the specified reference directory. Exiting...')
     elif type == 'gtf':
-        sys.exit('Gene annotation file not detected. Ensure file extension is either of ".gff(3)" or ".gtf". Exiting...')
-
-def get_sample_basenames(sample_dir):
-    samples = []
-    paired = 0
-    unpaired = 0
-    for f in os.listdir(sample_dir):
-        if re.search('_R[1-2]',f):
-            paired += 1
-            samples.append(re.split('_R[1-2]',f,maxsplit=1)[0])
-        else:
-            unpaired += 1
-            samples.append(f.split('.',1)[0])
-    
-    assert (paired % 2 == 0), f"Detected paired end file with no match. Ensure all paired files are matched. If \
-    not matched, remove '_R1' or '_R2' from file name."
-    #print(f"Found total of {paired} paired read files and {unpaired} unpaired read files.")
-    
-    return samples
-
-def get_sample_exts(sample_dir):
-    exts = []
-    for f in os.listdir(sample_dir):
-        exts.append(f.split('.',1)[1])
-
-    return set(exts)
+        sys.exit('Gene annotation file not detected. Ensure file extension is either of ".gff(3)" or ".gtf" and \
+exists within the specified reference directory. Exiting...')
 
 def get_callers():
     callers_set = []
@@ -52,42 +45,37 @@ def get_callers():
         callers_set.append('Mutect2')
     if config['use_freebayes']:
         callers_set.append('Freebayes')
+    if config['use_bcftools']:
+        callers_set.append('Bcftools')
     
     return callers_set
 
-def get_aligner_input(wildcards,aligner):
-    prefix = sample_dir + '/' + wildcards.sample
-    if samples.count(wildcards.sample) == 2:
-        sample = set([f for f in os.listdir(sample_dir) if re.split('_R[1-2]',f,maxsplit=1)[0] == wildcards.sample])
-        for ext in exts:
-            if os.path.exists(prefix + '_R1.' + ext):
-                R1 = os.path.abspath(prefix + '_R1.' + ext)
-                R2 = os.path.abspath(prefix + '_R2.' + ext)
-                if aligner == 'star' or aligner == 'bwa':
-                    return R1,R2
-                else:
-                    return f"-1 {R1} -2 {R2}"
+def is_paired(wildcards,R1,R2):
+    if pd.isna(R1) | pd.isna(R2):
+        return False
     else:
-        for ext in exts:
-            if os.path.exists(prefix + '.' + ext):
-                if aligner == 'star' or aligner == 'bwa':
-                    return os.path.abspath(prefix + '.' + ext)
-                else:
-                    return f"-U {os.path.abspath(prefix + '.' + ext)}"
+        return True
+
+def get_aligner_input(wildcards,aligner):
+    target_dir = f'../../{sample_dir}' if aligner == 'bwa' else f'../../../{sample_dir}'
+    R1,R2 = storage.fetch(wildcards.sample)
+    if is_paired(wildcards,R1,R2):
+        if aligner == 'star' or aligner == 'bwa':
+            return f"{target_dir}/{R1}",f"{target_dir}/{R2}"
+        else:
+            return f"-1 {target_dir}/{R1} -2 {target_dir}/{R2}"
+    else:
+        if aligner == 'star' or aligner == 'bwa':
+            return f"{target_dir}/{R1}"
+        else:
+            return f"-U {target_dir}/{R1}"
 
 def get_star_readfile_command(wildcards):
-    prefix = sample_dir + '/' + wildcards.sample
-    for ext in exts:
-        if os.path.exists(prefix + '_R1.' + ext):
-            if ext.endswith('.gz'):
-                return '--readFilesCommand zcat'
-            else:
-                return ''
-        elif os.path.exists(prefix + '.' + ext):
-            if ext.endswith('.gz'):
-                return '--readFilesCommand zcat'
-            else:
-                return ''
+    R1 = storage.fetch(wildcards.sample)[0]
+    if R1.endswith('.gz'):
+        return '--readFilesCommand zcat'
+    else:
+        return ''
 
 def get_aligner_directory(wildcards):
     prefix = '../results/' + wildcards.sample + '/' + wildcards.aligner + '/'
@@ -109,6 +97,6 @@ def get_input_bam(wildcards,calling=False,ind=False):
 
 def get_intersection_output(wildcards):
     if config['output_combined']:
-        return '-w1 -o ../results/' + wildcards.sample + '/final_calls/final_calls.vcf'
+        return '-w1 -o ../results/' + wildcards.sample + '/final_calls/final_calls_' + wildcards.sample + '.vcf'
     else:
         return '-p ../results/' + wildcards.sample + '/final_calls'

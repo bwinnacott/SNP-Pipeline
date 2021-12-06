@@ -23,8 +23,6 @@ rule mark_duplicates:
         '../results/{sample}/{aligner}/bam_preprocessing/dedup_reads_{sample}.bai'
     conda:
         "../envs/gatk.yaml"
-    threads:
-        config['cores']
     shell:
         'gatk MarkDuplicates -I {input.bam} '
         '-O {output[0]} '
@@ -41,8 +39,6 @@ if mode == 'RNA':
             '../results/{sample}/{aligner}/bam_preprocessing/dedup_split_reads_{sample}.bam'
         conda:
             "../envs/gatk.yaml"
-        threads:
-            config['cores']
         shell:
             'gatk SplitNCigarReads --reference {input.ref} '
             '--input {input.bam} '
@@ -62,8 +58,6 @@ if mode == 'RNA':
             '../results/{sample}/{aligner}/bam_preprocessing/dedup_rna_reads_{sample}.bai'
         conda:
             "../envs/gatk.yaml"
-        threads:
-            config['cores']
         shell:
             'gatk AddOrReplaceReadGroups -INPUT {input} '
             '-OUTPUT {output[0]} '

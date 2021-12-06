@@ -1,22 +1,24 @@
+############################ Set Globals ############################
+samples: ../config/samples.tsv
+## ploidy level for organism of interest
+ploidy: 2
+## default number of cores for rules; change as desired
+cores: 1
+
 ############################ Required Input ############################
 
-samples: config/samples.tsv
-
-# placeholders for input fastq files; if not specified at command line, pipeline will not run!
+## placeholders for input fastq files; if not specified at command line, pipeline will not run!
 reference: False
 directory: False
 mode: None
-# annotation only required for RNA mode; will run in DNA mode without specifying file
-annotation: False
-# default cores for rules; change as desired
-cores: 1
 
 ############################ Overall Pipeline Parameters ############################
 
-# defaults to applying all callers; change to False to prevent any caller from running
+## defaults to applying all callers; change to False to prevent any caller from running
 use_mutect2: True
 use_freebayes: True
-# set to True to apply base quality score recalibration
+use_bcftools: True
+## set to False to prevent applying base quality score recalibration
 apply_bqsr: True
 
 ############################ STAR ############################
@@ -25,6 +27,7 @@ apply_bqsr: True
 sjdbOverhang: 150
 sjdbGTFtag: Parent
 genomeSAindexNbases: 12
+star_index_cores: 8
 
 ## default parameters for STAR alignment; change as desired
 outFilterType: BySJout
@@ -37,25 +40,35 @@ alignIntronMin: 20
 alignIntronMax: 1000000
 alignMatesGapMax: 1000000
 quantMode: GeneCounts
+star_align_cores: 8
 
 ############################ Hisat2 ############################
+
+## default cores for Hisat2 indexing
+hisat_index_cores: 8
 
 ## default parameters for Hisat2 alignment; change as desired
 minintronlen: 20
 maxintronlen: 500000
+hisat_align_cores: 8
 
 ############################ BWA ############################
 
 ## default parameteres for bwa index; change as desired
-algorithm: 'bwtsw'
+algorithm: bwtsw
+bwa_mem_cores: 8
 
 ############################ GATK Workflow ############################
 
-## default parameters for GATK's AddOrReplaceReadGroups tool
-pl: 'illumina'
-pu: 'LANLbyDefault'
+## set cores for tools allowing user specification
+hap_caller_cores: 8
+mutect_cores: 1
 
-# default parameters for GATK's VariantFiltration -- SNPs
+## default parameters for GATK's AddOrReplaceReadGroups tool
+pl: illumina
+pu: LANLbyDefault
+
+## default parameters for GATK's VariantFiltration -- SNPs
 QD_filter_snp: QD < 2.0
 FS_filter_snp: FS > 60.0
 MQ_filter_snp: MQ < 40.0
@@ -63,26 +76,42 @@ SOR_filter_snp: SOR > 4.0
 MQRankSum_filter_snp: MQRankSum < -12.5
 ReadPosRankSum_filter_snp: ReadPosRankSum < -8.0
 
-# default parameters for GATK's VariantFiltration -- INDELs
+## default parameters for GATK's VariantFiltration -- INDELs
 QD_filter_indel: QD < 2.0
 FS_filter_indel: FS > 60.0
 SOR_filter_indel: SOR > 4.0
 
 ############################ Freebayes ############################
 
-# default parameters for freebayes variant calling method; change as desired
+## default parameters for Freebayes variant calling method; change as desired
 chunksize: 100000
-ploidy: 2
 min_alternate_count: 5
-min_alternate_freq: 0.05
+min_alternate_freq: 0.01
 min_coverage: 10
 min_map_qual: 20
 min_base_qual: 20
+free_cores: 1
+
+## optional parameter for filtering Freebayes calls by QUAL field; default set at 20 (change as desired); set to None to turn off
+QUAL: 0
+
+############################ Bcftools ############################
+
+## default parameters for Bcftools variant calling method; change as desired
+## mpileup options
+bcftools_cores: 1
+max_depth: 250
+min_MQ: 0
+min_BQ: 13
+## call options
+caller: -m  # either -m or -c; -m by default
+## filter options
+qual_filter: QUAL > 20  # set to include variants above threshold
+depth_filter: DP > 10   # set to include variants above threshold
 
 ############################ Variant Intersection ############################
 
-# number of files variant must be at least present in to output to final call set
+## number of files variant must be at least present in to output to final call set
 nfiles: 2
-# when True, only 1 output vcf file will be written (GATK by default); when False, all files are subset and output
+## when True, only 1 output vcf file will be written (GATK by default); when False, all files are subset and output
 output_combined: True
-

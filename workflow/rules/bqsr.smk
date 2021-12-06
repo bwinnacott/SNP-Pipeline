@@ -6,8 +6,8 @@ rule HaplotypeCaller:
         '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf'
     conda:
         "../envs/gatk.yaml"
-    threads:
-        config['cores']
+    threads: 
+        max(config['cores'],config['hap_caller_cores'])
     shell:
         'gatk HaplotypeCaller -R {input.ref} '
         '-I {input.bam} '
@@ -23,16 +23,14 @@ rule SelectVariants_pass1:
         '../results/{sample}/{aligner}/bqsr/raw_indels_{sample}.vcf'
     conda:
         "../envs/gatk.yaml"
-    threads:
-        config['cores']
     shell:
         'gatk SelectVariants -R {input.ref} '
         '-V {input.vcf} '
-        '--select-type-to-exclude SNP '
+        '--select-type-to-exclude INDEL '
         '-O {output[0]} && '
         'gatk SelectVariants -R {input.ref} '
         '-V {input.vcf} '
-        '--select-type-to-exclude INDEL '
+        '--select-type-to-exclude SNP '
         '-O {output[1]}'
 
 rule VariantFiltration:
@@ -81,8 +79,6 @@ rule SelectVariants_pass2:
         '../results/{sample}/{aligner}/bqsr/bqsr_indels_{sample}.vcf'
     conda:
         "../envs/gatk.yaml"
-    threads:
-        config['cores']
     shell:
         'gatk SelectVariants --exclude-filtered true '
         '-V {input.filtered_snps_vcf} '
@@ -101,8 +97,6 @@ rule BaseRecalibrator:
         '../results/{sample}/{aligner}/bqsr/recal_data_{sample}.table'
     conda:
         "../envs/gatk.yaml"
-    threads:
-        config['cores']
     shell:
         'gatk BaseRecalibrator -R {input.ref} '
         '-I {input.bam} '

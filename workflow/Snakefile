@@ -1,7 +1,21 @@
 import sys
+import pandas as pd
+from pytools.persistent_dict import PersistentDict
+
+# define rules to be run locally (when submitting to cluster)
+localrules: all, get_sample_info
 
 # global configuration file
 configfile: "../config/config.yaml"
+
+# used for storing info between job processes within a single run, but not between different runs of workflow
+storage = PersistentDict('pipeline_storage')
+
+# check whether a file directory was specified for the current run
+if not config['directory']:
+    sys.exit('No fastq file directory provided. Exiting program...')
+else:
+    sample_dir = '../data/' + config['directory']
 
 # run utilities rule to gain access to helper functions
 include: "rules/utilities.smk"
@@ -13,46 +27,53 @@ else:
     ref_dir = '../resources/' + config['reference'] + '/'
     ref = get_resource_file(ref_dir,type='fasta')
 
+# check whether a sample processing mode was specified for current run
 if not config['mode']:
-    sys.exit("Sample processing mode not specified. Provide either 'RNA' or 'DNA' at command line or in config file under parameter 'mode'. Exiting program...")
+    sys.exit("Sample processing mode not specified. Provide either 'RNA' or 'DNA' at command line or in \
+config file under parameter 'mode'. Exiting program...")
 else:
     mode = config['mode']
 
+# for RNA mode, access the gtf file
 if mode == 'RNA':
     annotation = get_resource_file(ref_dir,type='gtf')
 
-if not config['directory']:
-    sys.exit('No fastq file directory provided. Exiting program...')
-else:
-    sample_dir = '../data/' + config['directory']
+# extract sample names for all samples being run in analysis; used for wildcard in rule 'all' below
+samples_df = pd.read_csv(config['samples'],sep='\t').set_index('Sample_name')
+samples = samples_df.index.tolist()
 
-# extract basenames for all samples being run in analysis
-samples = get_sample_basenames(sample_dir)
-exts = get_sample_exts(sample_dir)
 # get list of callers used for analysis
 callers = get_callers()
+ 
+########## Core of the Pipeline ##########
 
-# core of the pipeline
+# get aligner(s) based on mode specified
 if mode == 'RNA':
     aligner = ['star','hisat2']
 else:
     aligner = 'bwa'
 
+# perform read mapping
 if mode == 'RNA':
-    include: "rules/star.smk"
-    include: "rules/hisat2.smk"
+    include: "rules/RNA_indexing.smk"
+    include: "rules/RNA_mapping.smk"
 elif mode == 'DNA':
-    include: "rules/bwa.smk"
+    include: "rules/DNA_mapping.smk"
 else:
-    sys.exit("Sample processing mode not compatible with pipeline. Please specify either 'RNA' or 'DNA'.")
+    sys.exit("Sample processing mode not compatible with pipeline. Please specify either 'RNA' or 'DNA'. Exiting...")
+
+# preprocess BAM files
 include: "rules/preprocess_bams.smk"
 
+# apply base quality score recalibration if set in config file
 if config['apply_bqsr']:
     include: "rules/bqsr.smk"
-    
-include: "rules/call_variants.smk"
-include: "rules/merge.smk"
 
+# call and filter variants
+include: "rules/call_variants.smk"
+include: "rules/merge_variants.smk"
+
+# target rule
 rule all:
     input:
         expand('../results/{sample}/final_calls/',sample=samples)

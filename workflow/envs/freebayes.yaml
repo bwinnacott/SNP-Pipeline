@@ -4,3 +4,4 @@ channels:
 dependencies:
   - freebayes=1.3.1
   - parallel=20190522
+  - vcflib=1.0.0_rc2

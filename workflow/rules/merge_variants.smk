@@ -6,7 +6,6 @@ rule compress_and_index:
         '../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf.gz.tbi'
     conda:
         "../envs/merge.yaml"
-    threads: 1
     shell:
         'bgzip {input} && '
         'tabix {output[0]}'
@@ -21,7 +20,8 @@ rule intersection:
         directory('../results/{sample}/final_calls/')
     conda:
         "../envs/merge.yaml"
-    threads: 1
     shell:
+        # might think about writing script to handle different scenarios for intersection output
+        # i.e., renaming the output files if all files are written out...
         'mkdir -p {output} && '
         'bcftools isec -n +{params.nfiles} {params.output} {input}'
