@@ -9,7 +9,7 @@ cores: 1
 
 ## placeholders for input fastq files; if not specified at command line, pipeline will not run!
 reference: False
-directory: False
+data: False
 mode: None
 
 ############################ Overall Pipeline Parameters ############################

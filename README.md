@@ -11,8 +11,7 @@ consisting of either RNA-seq or DNA-seq reads.
 * Snakemake
 * Pandas
 
-## Getting Started
-### Installation
+## Installation
 The pipeline currently uses conda environments to automatically deploy required software for each process (i.e., mapping, variant calling, etc.). 
 Ensure `conda` is available for use on your system before proceeding. To create a new environment with the above dependencies, run the following:
 ```
@@ -35,8 +34,55 @@ To verify proper configuration, run the following:
 $ snakemake -h
 ```
 
+## Getting Started
 ### Sample Data Preparation
-The directory structure of the pipeline is set up to read input fastq files from a specified directory in the [Data Folder](data/) folder
+The pipeline is set up to read input fastq files from a user specified directory in [data](data/). The idea is to create a new directory 
+for each project and add all associated sample fastq files to it. Once fastq files are added to the created directory, the specific sample 
+input details for the project need to be added to [this table](config/samples.tsv). More info [here](config/README.md).
 
-### Configuration
-Before running the pipeline,
+Additionally, add the reference assembly file and, if running in "RNA" mode, a gene annotation file to a user specified directory 
+in the [resources](resources/) folder. Again, create a directory that represents the project in question (i.e., if working with mouse samples, 
+a simple directory named "mouse_GRCm39" would hold the file(s)). Once the reference indexes for a given organism are initially created, they 
+can be reused with future executions of the pipeline, without the need to recreate them (Snakemake will auto detect). 
+
+### General Pipeline Configuration
+Before running the pipeline, configure general settings in [this config file](config/config.yaml). Details for parameters are provided in 
+the file. 
+
+### Example Pipeline Run
+Given all input files are organized according to the following structure (defined above):
+
+```
+├── README.md
+├── workflow
+├── config
+├── resources
+│	└── organism1					# user created directory
+│	│	├── reference.fa
+│   │	└── gene_annotation.gtf		# only necessary if running in "RNA" mode
+│	└── organism2
+└── data
+│	└── project1					# user created directory
+│	│	├── sample1_R1.fq
+│	│	├── sample1_R2.fq
+│	│	├── sample2_R1.fq
+│	│	└── sample2_R2.fq
+│	└── project2
+└── results
+```
+
+...and [samples.tsv](config/samples.tsv) is populated in the following manner:
+
+| Sample_name | R1 | R2 |
+| :---: | :---: | :---: |
+| Sample1 | sample1_R1.fq | sample1_R1.fq |
+| Sample2 | sample2_R1.fq | sample2_R1.fq |
+
+...and the workflow is properly configured for the current run, one can submit a pipeline instance to Canopus (slurm) with the following commands:
+
+```
+# move to directory where Snakefile is present
+cd workflow/
+# submit jobs to slurm scheduler
+snakemake --profile ../config/slurm --config reference=organism1 data=project1 mode=DNA
+```

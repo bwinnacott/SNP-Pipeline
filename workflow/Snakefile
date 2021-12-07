@@ -12,10 +12,10 @@ configfile: "../config/config.yaml"
 storage = PersistentDict('pipeline_storage')
 
 # check whether a file directory was specified for the current run
-if not config['directory']:
+if not config['data']:
     sys.exit('No fastq file directory provided. Exiting program...')
 else:
-    sample_dir = '../data/' + config['directory']
+    sample_dir = '../data/' + config['data']
 
 # run utilities rule to gain access to helper functions
 include: "rules/utilities.smk"
