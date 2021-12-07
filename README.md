@@ -64,31 +64,13 @@ Given all input files are organized according to the following structure (define
 ├── workflow
 ├── config
 ├── resources
-│	└── organism1					# user created directory
+│	└── organism1
 │	│	├── reference.fa
-│   │	└── gene_annotation.gtf		# only necessary if running in "RNA" mode
+│   │	└── gene_annotation.gtf
 │	└── organism2
 └── data
-│	└── project1					# user created directory
-│	│	│	├── sample1_R1.fq
-│	│	├── sample1_R2.fq
-│	│	├── sample2_R1.fq
-│	│	└── sample2_R2.fq
-│	└── project2
-└── results
-```
-```
-├── README.md
-├── workflow
-├── config
-├── resources
-│	└── organism1					# user created directory
-│	│	├── reference.fa
-│   │	└── gene_annotation.gtf		# only necessary if running in "RNA" mode
-│	└── organism2
-└── data
-│	└── project1					# user created directory
-│	│	│	├── sample1_R1.fq
+│	└── project1
+│	│	├── sample1_R1.fq
 │	│	├── sample1_R2.fq
 │	│	├── sample2_R1.fq
 │	│	└── sample2_R2.fq
