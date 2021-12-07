@@ -77,7 +77,7 @@ Given all input files are organized according to the following structure (define
 │	└── project2
 └── results
 ```
-
+```
 ├── README.md
 ├── workflow
 ├── config
@@ -94,6 +94,7 @@ Given all input files are organized according to the following structure (define
 │	│	└── sample2_R2.fq
 │	└── project2
 └── results
+```
 
 ...and [samples.tsv](config/samples.tsv) is populated in the following manner:
 
