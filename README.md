@@ -65,8 +65,8 @@ Given all input files are organized according to the following structure (define
 ├── config
 ├── resources
 │	├── organism1
-│	│	├── reference.fa
-│   	│	└── gene_annotation.gtf
+│	│├── reference.fa
+│   │	└── gene_annotation.gtf
 │	└── organism2
 ├── data
 │	├── project1
