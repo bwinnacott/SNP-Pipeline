@@ -64,16 +64,16 @@ Given all input files are organized according to the following structure (define
 ├── workflow
 ├── config
 ├── resources
-│	├── organism1
-│	│	└── reference.fa
-│	└── organism2
+│   ├── organism1
+│   │   └── reference.fa
+│   └── organism2
 ├── data
-│	├── project1
-│	│	├── sample1_R1.fq
-│	│	├── sample1_R2.fq
-│	│	├── sample2_R1.fq
-│	│	└── sample2_R2.fq
-│	└── project2
+│   ├── project1
+│   │   ├── sample1_R1.fq
+│   │   ├── sample1_R2.fq
+│   │   ├── sample2_R1.fq
+│   │   └── sample2_R2.fq
+│   └── project2
 └── results
 ```
 
