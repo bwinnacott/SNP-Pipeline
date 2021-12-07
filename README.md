@@ -78,6 +78,23 @@ Given all input files are organized according to the following structure (define
 └── results
 ```
 
+├── README.md
+├── workflow
+├── config
+├── resources
+│	└── organism1					# user created directory
+│	│	├── reference.fa
+│   │	└── gene_annotation.gtf		# only necessary if running in "RNA" mode
+│	└── organism2
+└── data
+│	└── project1					# user created directory
+│	│	│	├── sample1_R1.fq
+│	│	├── sample1_R2.fq
+│	│	├── sample2_R1.fq
+│	│	└── sample2_R2.fq
+│	└── project2
+└── results
+
 ...and [samples.tsv](config/samples.tsv) is populated in the following manner:
 
 | Sample_name | R1 | R2 |
