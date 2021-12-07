@@ -1,5 +1,6 @@
 rule star_align:
     input:
+        sample_dir + '/running_pipeline.txt',
         refdir = ref_dir + os.path.splitext(ref)[0] + '_star_index'
     params:
         sample = lambda wc: get_aligner_input(wc,aligner='star'),
@@ -44,6 +45,7 @@ rule star_align:
 
 rule hisat2_align:
     input:
+        sample_dir + '/running_pipeline.txt',
         annotation = ref_dir + annotation,
         refdir = ref_dir + os.path.splitext(ref)[0] + '_hisat2_index'
     params:
