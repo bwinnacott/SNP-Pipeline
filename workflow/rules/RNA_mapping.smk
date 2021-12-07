@@ -1,4 +1,4 @@
-rule star_align:
+rule StarAlign:
     input:
         sample_dir + '/running_pipeline.txt',
         refdir = ref_dir + os.path.splitext(ref)[0] + '_star_index'
@@ -43,7 +43,7 @@ rule star_align:
         '--quantMode {params.quantMode} && '
         'mv Aligned.sortedByCoord.out.bam {wildcards.sample}_sorted.bam && cd ../../../../workflow'
 
-rule hisat2_align:
+rule Hisat2Align:
     input:
         sample_dir + '/running_pipeline.txt',
         annotation = ref_dir + annotation,

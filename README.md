@@ -1,9 +1,9 @@
 # Single Sample Somatic Variant Calling Pipeline using Snakemake
 ## Overview
 This Snakemake pipeline provides an ensemble method for calling somatic SNVs in a single sample (i.e., w/out a normal match) 
-consisting of either RNA-seq or DNA-seq reads. 
+consisting of either RNA-seq or DNA-seq reads. The core workflow is shown in the example below.
 
-*The pipeline is currently only configured for use with the Slurm scheduler (i.e., usage on Canopus only).*
+
 
 ## Dependencies
 * Python 3
@@ -17,6 +17,8 @@ Ensure `conda` is available for use on your system before proceeding. To create 
 ```
 # specify any environment name after -n flag
 $ conda create -n snakemake python=3 pandas snakemake
+# activate the previously created environment
+$ conda activate snakemake
 ```
 
 Clone the pipeline in the current working directory using git:
@@ -49,6 +51,11 @@ can be reused with future executions of the pipeline, without the need to recrea
 Before running the pipeline, configure general settings in [this config file](config/config.yaml). Details for parameters are provided in 
 the file. 
 
+### Cluster Configuration
+Currently, the pipeline is built for submission to a cluster using the slurm workload manager (i.e., Canopus). To configure default resources 
+used by all rules such as memory, nodes, and time, modify entries [here](config/slurm/config.yaml). For advanced configuration, specifying resources 
+at rule definition will override the default parameters in the cluster configuration file.
+
 ### Example Pipeline Run
 Given all input files are organized according to the following structure (defined above):
 
@@ -63,7 +70,7 @@ Given all input files are organized according to the following structure (define
 │	└── organism2
 └── data
 │	└── project1					# user created directory
-│	│	├── sample1_R1.fq
+│	│	│	├── sample1_R1.fq
 │	│	├── sample1_R2.fq
 │	│	├── sample2_R1.fq
 │	│	└── sample2_R2.fq
@@ -86,3 +93,10 @@ cd workflow/
 # submit jobs to slurm scheduler
 snakemake --profile ../config/slurm --config reference=organism1 data=project1 mode=DNA
 ```
+
+Snakemake automatically generates, submits, and monitors job submissions to the slurm scheduler. Log files for all rules will 
+be output in a newly created "logs/" folder within the [workflow](workflow/) directory, named according to the sample name and 
+slurm job ID. All pipeline output for each sample will go to the [results](results/) folder under a newly created directory 
+named after the sample. Final variant callsets will be located in the *final_calls* directory.
+
+## Current Limitations

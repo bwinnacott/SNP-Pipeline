@@ -1,7 +1,7 @@
 if annotation.endswith(tuple(['.gff3','.gff'])):
     annotation_split = os.path.splitext(annotation)
     annotation = annotation_split[0] + '.gtf'
-    rule convert_gff_to_gtf:
+    rule ConvertGffToGtf:
         input:
             gff = ref_dir + ''.join(annotation_split)
         output:
@@ -11,7 +11,7 @@ if annotation.endswith(tuple(['.gff3','.gff'])):
         shell:
             'gffread {input.gff} -T -o {output}'
 
-rule star_index:
+rule StarIndex:
     input:
         ref = ref_dir + ref,
         annotation = ref_dir + annotation
@@ -36,7 +36,7 @@ rule star_index:
         '--sjdbGTFtagExonParentTranscript {params.sjdbGTFtag} '
         '--genomeSAindexNbases {params.genomeSAindexNbases}'
 
-rule hisat2_index:
+rule Hisat2Index:
     input:
         ref = ref_dir + ref
     params:

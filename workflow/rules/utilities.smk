@@ -1,7 +1,7 @@
 import os
 import re
 
-rule get_sample_info:
+rule GetSampleInfo:
     output:
         temp(sample_dir + '/running_pipeline.txt')
     run:

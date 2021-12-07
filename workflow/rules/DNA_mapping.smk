@@ -1,4 +1,4 @@
-rule bwa_index:
+rule BWAIndex:
     input:
         ref = ref_dir + ref
     params: 
@@ -14,7 +14,7 @@ rule bwa_index:
     shell:
         'bwa index -a {params.algorithm} {input.ref}'
 
-rule bwa_mem:
+rule BWAMem:
     input:
         sample_dir + '/running_pipeline.txt',
         ref_dir + ref + '.amb',

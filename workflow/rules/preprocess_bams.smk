@@ -1,4 +1,4 @@
-rule index_ref:
+rule IndexRef:
     input:
         ref = ref_dir + ref
     output:
@@ -10,7 +10,7 @@ rule index_ref:
         'gatk CreateSequenceDictionary -R ../resources/{input.ref} && '
         'samtools faidx ../resources/{input.ref}'
 
-rule mark_duplicates:
+rule MarkDuplicates:
     input:
         ref_dir + os.path.splitext(ref)[0] + '.dict',
         ref_dir + ref + '.fai',
@@ -31,7 +31,7 @@ rule mark_duplicates:
         '--CREATE_INDEX true'
 
 if mode == 'RNA':
-    rule split_cigar_reads:
+    rule SplitCigarReads:
         input:
             ref = ref_dir + ref,
             bam = '../results/{sample}/{aligner}/bam_preprocessing/dedup_reads_{sample}.bam'
@@ -44,7 +44,7 @@ if mode == 'RNA':
             '--input {input.bam} '
             '--output {output}'
 
-    rule add_or_replace_rgps:
+    rule AddOrReplaceReadGroups:
         input:
             '../results/{sample}/{aligner}/bam_preprocessing/dedup_split_reads_{sample}.bam'
         params:

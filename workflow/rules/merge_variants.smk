@@ -1,4 +1,4 @@
-rule compress_and_index:
+rule CompressAndIndex:
     input:
         '../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf'
     output:
@@ -10,7 +10,7 @@ rule compress_and_index:
         'bgzip {input} && '
         'tabix {output[0]}'
 
-rule intersection:
+rule Intersection:
     input:
         expand('../results/{sample}/{aligner}/{caller}/final_{caller}_variants_{sample}.vcf.gz',aligner=aligner,caller=callers,allow_missing=True)
     params:

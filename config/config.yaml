@@ -2,7 +2,7 @@
 samples: ../config/samples.tsv
 ## ploidy level for organism of interest
 ploidy: 2
-## default number of cores for rules; change as desired
+## default number of cores for rules without specification below; change as desired
 cores: 1
 
 ############################ Required Input ############################
@@ -50,12 +50,14 @@ hisat_index_cores: 8
 ## default parameters for Hisat2 alignment; change as desired
 minintronlen: 20
 maxintronlen: 500000
+## default cores for Hisat2 alignment
 hisat_align_cores: 8
 
 ############################ BWA ############################
 
 ## default parameteres for bwa index; change as desired
 algorithm: bwtsw
+## default cores for bwa alignment
 bwa_mem_cores: 8
 
 ############################ GATK Workflow ############################
@@ -64,7 +66,7 @@ bwa_mem_cores: 8
 hap_caller_cores: 8
 mutect_cores: 1
 
-## default parameters for GATK's AddOrReplaceReadGroups tool
+## default parameters for GATK's AddOrReplaceReadGroups tool; change as needed
 pl: illumina
 pu: LANLbyDefault
 
@@ -90,9 +92,10 @@ min_alternate_freq: 0.01
 min_coverage: 10
 min_map_qual: 20
 min_base_qual: 20
+## default cores for freebayes
 free_cores: 1
 
-## optional parameter for filtering Freebayes calls by QUAL field; default set at 20 (change as desired); set to None to turn off
+## optional parameter for filtering Freebayes calls by QUAL field; default set at 0 (change as desired)
 QUAL: 0
 
 ############################ Bcftools ############################

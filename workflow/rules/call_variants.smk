@@ -95,7 +95,7 @@ if config['use_freebayes']:
             'vcffilter -f "QUAL > {params.qual}" {input} > {output}'
 
 if config['use_bcftools']:
-    rule Bcftools_call:
+    rule BcftoolsCall:
         input:
             bam = lambda wc: get_input_bam(wc,calling=True),
             ref = ref_dir + ref
