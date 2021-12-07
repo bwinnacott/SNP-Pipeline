@@ -1,0 +1,1 @@
+Create project/sample specific directories here to store fastq files as pipeline input. Update information in [samples.tsv](../config/samples.tsv).
