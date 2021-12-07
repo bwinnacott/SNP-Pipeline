@@ -81,8 +81,8 @@ Given all input files are organized according to the following structure (define
 
 | Sample_name | R1 | R2 |
 | :---: | :---: | :---: |
-| Sample1 | sample1_R1.fq | sample1_R1.fq |
-| Sample2 | sample2_R1.fq | sample2_R1.fq |
+| Sample1 | sample1_R1.fq | sample1_R2.fq |
+| Sample2 | sample2_R1.fq | sample2_R2.fq |
 
 ...and the workflow is properly configured for the current run, one can submit a pipeline instance to Canopus (slurm) with the following commands:
 
