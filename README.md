@@ -3,7 +3,7 @@
 This Snakemake pipeline provides an ensemble method for calling somatic SNVs in a single sample (i.e., w/out a normal match) 
 consisting of either RNA-seq or DNA-seq reads. The core workflow is shown in the example below.
 
-
+![DAG](../media/dag.png?raw=true)
 
 ## Dependencies
 * Python 3
