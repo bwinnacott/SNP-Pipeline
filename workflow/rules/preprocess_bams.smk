@@ -1,14 +1,14 @@
 rule IndexRef:
     input:
-        ref = ref_dir + ref
+        ref_dir + ref
     output:
         ref_dir + os.path.splitext(ref)[0] + '.dict',
         ref_dir + ref + '.fai'
     conda:
         "../envs/gatk.yaml"
     shell:
-        'gatk CreateSequenceDictionary -R ../resources/{input.ref} && '
-        'samtools faidx ../resources/{input.ref}'
+        'gatk CreateSequenceDictionary -R {input} && '
+        'samtools faidx {input}'
 
 rule MarkDuplicates:
     input:

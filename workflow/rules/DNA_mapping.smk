@@ -1,6 +1,6 @@
 rule BWAIndex:
     input:
-        ref = ref_dir + ref
+        ref_dir + ref
     params: 
         algorithm = config['algorithm']
     output:
@@ -12,7 +12,7 @@ rule BWAIndex:
     conda:
         "../envs/bwa.yaml"
     shell:
-        'bwa index -a {params.algorithm} {input.ref}'
+        'bwa index -a {params.algorithm} {input}'
 
 rule BWAMem:
     input:

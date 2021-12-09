@@ -20,13 +20,15 @@ present in the specified directory ({sample_dir}). Please fix before proceeding.
             storage.store(sample,[sample_info[0],sample_info[1]])
 
 def get_resource_file(ref_dir,type=None):
-    ref_exts = tuple(['.fasta','.fa','.fasta.gz','.fa.gz'])
+    ref_exts = tuple(['.fasta','.fa'])
     ann_exts = tuple(['.gff','.gff3','.gtf'])
     for f in os.listdir(ref_dir):
         if f.endswith(ref_exts) and type == 'fasta':
             return f
         elif f.endswith(ann_exts) and type == 'gtf':
             return f
+        elif f.endswith('.gz') and type == 'fasta':
+            sys.exit('Reference file is compressed. Uncompress file before restarting pipeline. Exiting...')
         elif f.endswith('.gz') and type == 'gtf':
             sys.exit('Annotation file is compressed. Uncompress file before restarting pipeline. Exiting...')
         else:

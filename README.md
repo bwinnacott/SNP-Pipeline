@@ -53,8 +53,8 @@ the file.
 
 ### Cluster Configuration
 Currently, the pipeline is built for submission to a cluster using the slurm workload manager (i.e., Canopus). To configure default resources 
-used by all rules such as memory, nodes, and time, modify entries [here](config/slurm/config.yaml). For advanced configuration, specifying resources 
-at rule definition will override the default parameters in the cluster configuration file.
+used by all rules such as memory, nodes, and time, modify entries as needed [here](config/slurm/config.yaml). For advanced configuration, 
+specifying resources at rule definition will override the default parameters in the cluster configuration file.
 
 ### Example Pipeline Run
 Given all input files are organized according to the following structure (defined above):
@@ -93,6 +93,11 @@ cd workflow/
 # submit jobs to slurm scheduler
 snakemake --profile ../config/slurm --config reference=organism1 data=project1 mode=DNA
 ```
+
+***Note***
+*As jobs are running on compute nodes, Snakemake runs in the background to generate, submit, and monitor subsequent jobs until the* 
+*pipeline completes. As such, running in an interactive session is necessary in order to avoid slowing down login nodes. Using a terminal* 
+*multiplexer (i.e., screen or tmux) is recommended for continued use of the cluster without disrupting the pipeline run.*
 
 Snakemake automatically generates, submits, and monitors job submissions to the slurm scheduler. Log files for all rules will 
 be output in a newly created "logs/" folder within the [workflow](workflow/) directory, named according to the sample name and 

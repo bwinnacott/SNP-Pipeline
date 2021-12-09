@@ -100,6 +100,7 @@ if config['use_bcftools']:
             bam = lambda wc: get_input_bam(wc,calling=True),
             ref = ref_dir + ref
         params:
+            ploidy = '--ploidy 1 ' if config['ploidy'] == 1 else '',
             max_dp = config['max_depth'],
             min_MQ = config['min_MQ'],
             min_BQ = config['min_BQ'],
@@ -119,5 +120,5 @@ if config['use_bcftools']:
             '--min-BQ {params.min_BQ} '
             '--threads {threads} '
             '-f {input.ref} {input.bam} | '
-            'bcftools call -Ou -v {params.caller} | '
+            'bcftools call -Ou -v {params.caller} {params.ploidy}| '
             'bcftools filter -s LowQual -i "{params.qual_filter} & {params.depth_filter}" > {output}'

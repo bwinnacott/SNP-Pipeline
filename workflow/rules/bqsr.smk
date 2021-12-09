@@ -14,7 +14,7 @@ rule HaplotypeCaller:
         '-O {output} '
         '--native-pair-hmm-threads {threads}'
 
-rule SelectVariants_pass1:
+rule SelectVariants_Pass1:
     input:
         vcf = '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf',
         ref = ref_dir + ref
@@ -70,7 +70,7 @@ rule VariantFiltration:
         '-filter-name "FS_filter" -filter "{params.FS_filter_indel}" '
         '-filter-name "SOR_filter" -filter "{params.SOR_filter_indel}"'
 
-rule SelectVariants_pass2:
+rule SelectVariants_Pass2:
     input:
         filtered_snps_vcf = '../results/{sample}/{aligner}/bqsr/filtered_snps_{sample}.vcf',
         filtered_indels_vcf = '../results/{sample}/{aligner}/bqsr/filtered_indels_{sample}.vcf'

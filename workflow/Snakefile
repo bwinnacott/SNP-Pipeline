@@ -3,7 +3,7 @@ import pandas as pd
 from pytools.persistent_dict import PersistentDict
 
 # define rules to be run locally (when submitting to cluster)
-localrules: all, get_sample_info
+localrules: all, GetSampleInfo
 
 # global configuration file
 configfile: "../config/config.yaml"
