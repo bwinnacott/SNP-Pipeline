@@ -94,7 +94,7 @@ cd workflow/
 snakemake --profile ../config/slurm --config reference=organism1 data=project1 mode=DNA
 ```
 
-***Note***  
+***Important Note:***  
 *As jobs are running on compute nodes, Snakemake runs in the background to generate, submit, and monitor subsequent jobs until the* 
 *pipeline completes. As such, running in an interactive session is necessary in order to avoid slowing down login nodes. Using a terminal* 
 *multiplexer (i.e., screen or tmux) is recommended for continued use of the cluster without disrupting the pipeline run.*
