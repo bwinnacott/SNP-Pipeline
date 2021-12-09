@@ -105,3 +105,16 @@ slurm job ID. All pipeline output for each sample will go to the [results](resul
 named after the sample. Final variant callsets will be located in the *final_calls* directory.
 
 ## Current Limitations
+1. Only configured for use with Slurm scheduler (can incorporate SGE if needed)
+2. The need to run Snakemake process on terminal multiplexer (i.e., screen or tmux) while it submits jobs to compute nodes
+3. Dry runs are currently non-functional due to nature of storing sample info (use of persistent dictionary) for one pipeline run. This 
+was implemented to allow running multiple pipeline instances at the same time with differing samples. Will most likely switch over to 
+storing each pipeline instance's sample info in a temporary file to match Snakemake methodology (i.e., detecting input and output files 
+from rule to rule).
+4. Additional...
+
+## Ongoing Development
+1. Evaluation of performance (sensitivity and precision) is underway to establish best default parameters (filtering, bqsr, etc.)
+2. Generation of summary report for user evaluation
+3. Selecting best hard filters for RNA-seq variant calling mode
+4. Additional filtering strategies???
