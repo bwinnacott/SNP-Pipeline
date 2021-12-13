@@ -6,17 +6,17 @@ consisting of either RNA-seq or DNA-seq reads. The workflow is detailed in the s
 ![DAG](../media/dag.png?raw=true)
 
 ## Dependencies
-* Python 3
-* Anaconda (or Miniconda)
-* Snakemake
-* Pandas
+* **Python 3**
+* **Anaconda (or Miniconda)**
+* **Snakemake**
+* **Pandas**
 
 ## Installation
 The pipeline currently uses conda environments to automatically deploy required software for each process (i.e., mapping, variant calling, etc.). 
 Ensure `conda` is available for use on your system before proceeding. To create a new environment with the above dependencies, run the following:
 ```
 # specify any environment name after -n flag
-$ conda create -n snakemake python=3 pandas snakemake
+$ conda create -n snakemake -c conda-forge -c bioconda python=3 pandas snakemake
 # activate the previously created environment
 $ conda activate snakemake
 ```
@@ -40,7 +40,7 @@ $ snakemake -h
 ### Sample Data Preparation
 The pipeline is set up to read input fastq files from a user specified directory in [data](data/). The idea is to create a new directory 
 for each project and add all associated sample fastq files to it. Once fastq files are added to the created directory, the specific sample 
-input details for the project need to be added to [this table](config/samples.tsv). More info [here](config/README.md).
+input details for the project need to be added to [this table](config/samples.tsv). More info [here](config/).
 
 Additionally, add the reference assembly file and, if running in "RNA" mode, a gene annotation file to a user specified directory 
 in the [resources](resources/) folder. Again, create a directory that represents the project in question (i.e., if working with mouse samples, 
