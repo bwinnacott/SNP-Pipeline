@@ -10,13 +10,15 @@ consisting of either RNA-seq or DNA-seq reads. The workflow is detailed in the s
 * **Anaconda (or Miniconda)**
 * **Snakemake**
 * **Pandas**
+* **Pytools**
+* **Mamba**
 
 ## Installation
 The pipeline currently uses conda environments to automatically deploy required software for each process (i.e., mapping, variant calling, etc.). 
 Ensure `conda` is available for use on your system before proceeding. To create a new environment with the above dependencies, run the following:
 ```
 # specify any environment name after -n flag
-$ conda create -n snakemake -c conda-forge -c bioconda python=3 pandas snakemake
+$ conda create -n snakemake -c conda-forge -c bioconda python=3 pandas snakemake mamba pytools
 # activate the previously created environment
 $ conda activate snakemake
 ```

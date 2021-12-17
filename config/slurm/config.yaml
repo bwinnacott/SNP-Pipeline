@@ -32,4 +32,5 @@ keep-going: True
 rerun-incomplete: True
 printshellcmds: True
 use-conda: True
-conda-frontend: conda
+# set to True if removing locking mechanism
+nolock: True
