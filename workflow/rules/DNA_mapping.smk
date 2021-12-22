@@ -1,3 +1,17 @@
+if config['apply_snpeff']:
+    if annotation.endswith(tuple(['.gff3','.gff'])):
+        annotation_split = os.path.splitext(annotation)
+        annotation = annotation_split[0] + '.gtf'
+        rule ConvertGffToGtf:
+            input:
+                gff = ref_dir + ''.join(annotation_split)
+            output:
+                ref_dir + annotation
+            conda:
+                "../envs/star.yaml"
+            shell:
+                'gffread {input.gff} -T -o {output}'
+
 rule BWAIndex:
     input:
         ref_dir + ref

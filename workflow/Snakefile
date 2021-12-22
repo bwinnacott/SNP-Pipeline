@@ -9,13 +9,18 @@ localrules: all, GetSampleInfo
 configfile: "../config/config.yaml"
 
 # used for storing info between job processes within a single run, but not between different runs of workflow
-storage = PersistentDict('pipeline_storage')
+#storage = PersistentDict('pipeline_storage')
 
 # check whether a file directory was specified for the current run
 if not config['data']:
     sys.exit('No fastq file directory provided. Exiting program...')
 else:
     sample_dir = '../data/' + config['data']
+
+# check if instance of pipeline was killed prior to finishing mapping step; this is needed to ensure pipeline 
+# will re-run the unfinished job(s)
+if os.path.exists(sample_dir + '/running_pipeline.txt'):
+    os.remove(sample_dir + '/running_pipeline.txt')
 
 # run utilities rule to gain access to helper functions
 include: "rules/utilities.smk"
@@ -35,7 +40,7 @@ else:
     mode = config['mode']
 
 # for RNA mode, access the gtf file
-if mode == 'RNA':
+if mode == 'RNA' or config['apply_snpeff']:
     annotation = get_resource_file(ref_dir,type='gtf')
 
 # extract sample names for all samples being run in analysis; used for wildcard in rule 'all' below
@@ -73,7 +78,12 @@ if config['apply_bqsr']:
 include: "rules/call_variants.smk"
 include: "rules/merge_variants.smk"
 
+if config['apply_snpeff']:
+    include: "rules/variant_annotation.smk"
+
 # target rule
 rule all:
     input:
-        expand('../results/{sample}/final_calls/',sample=samples)
+        expand('../results/{sample}/final_calls/final_calls_{sample}_snps_pass.vcf',sample=samples),
+        #expand('../results/{sample}/final_calls/ploidy_check_report.html',sample=samples)
+        '../resources/snpeff/'

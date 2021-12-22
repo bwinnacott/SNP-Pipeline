@@ -4,11 +4,11 @@ cluster:
   qsub
     -q {resources.queue}
     -pe smp {threads}
-    -l h_vmem={resources.mem_mb}
+    -l h_vmem={resources.mem_mb}M
     -l h_rt={resources.time}
     -N smk-{rule}-{wildcards}
-    -o logs/{rule}/{rule}-{wildcards}-%j.out
     -j y
+    -o logs/{rule}/{rule}-{wildcards}-$JOB_ID.out
     -cwd
     -S /bin/bash
     -V

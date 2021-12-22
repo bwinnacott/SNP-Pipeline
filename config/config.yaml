@@ -1,7 +1,7 @@
 ############################ Set Globals ############################
 samples: ../config/samples.tsv
 ## ploidy level for organism of interest
-ploidy: 1
+ploidy: 2
 ## default number of cores for rules without specification below; change as desired
 cores: 1
 
@@ -20,6 +20,8 @@ use_freebayes: True
 use_bcftools: True
 ## set to False to prevent applying base quality score recalibration
 apply_bqsr: True
+## set to False to prevent variant annotation using SnpEff
+apply_snpeff: True
 
 ############################ STAR ############################
 
@@ -120,7 +122,16 @@ depth_filter: DP > 10   # set to include variants above threshold
 ## However, if running in RNA mode, there will be 2 vcf files generated from each caller for 
 ## each sample, one per aligner (i.e., if all callers are activated, 6 total vcf files will 
 ## be generated). So, if running in DNA mode, it is recommended to set this parameter to at least 
-## 2. For RNA, setting to at least 4 is best.
+## 2. For RNA input, setting to at least 4 is recommended.
 nfiles: 2
 ## when True, only 1 output vcf file will be written (GATK by default); when False, all files are subset and output
-output_combined: True
+#output_combined: True
+
+############################ SnpEff Annotation ############################
+
+## Use this parameter to specify reference genome with pre-built SnpEff database (ex: to use the pre-built human 
+## reference database, enter 'GRCh38.99' or 'GRCh37.75')
+## If no pre-built database is available for your organism and wish to run SnpEff, a database can be built from 
+## the reference files in the reference folder specified at the command line. To build a database, set this parameter 
+## to False
+database: False
