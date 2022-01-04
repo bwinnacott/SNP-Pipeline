@@ -8,7 +8,7 @@ cluster:
     -l h_rt={resources.time}
     -N smk-{rule}-{wildcards}
     -j y
-    -o logs/{rule}/{rule}-{wildcards}-$JOB_ID.out
+    -o logs/{rule}/{rule}-{wildcards}-\$JOB_ID.out
     -cwd
     -S /bin/bash
     -V
@@ -18,9 +18,9 @@ cluster:
 
 # sets default resources for all jobs submitted; resources defined in rule will override these
 default-resources:
-  - queue=tb
+  - queue=tb.q
   - mem_mb=10000
-  - time="3-00:00:00"
+  - time="72:00:00"
 
 # sets maximum resources allocated to all jobs submitted at the same time
 resources:

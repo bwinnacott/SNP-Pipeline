@@ -81,9 +81,12 @@ include: "rules/merge_variants.smk"
 if config['apply_snpeff']:
     include: "rules/variant_annotation.smk"
 
+if config['check_ploidy']:
+    include: "rules/ploidy_check.smk"
+
 # target rule
 rule all:
     input:
         expand('../results/{sample}/final_calls/final_calls_{sample}_snps_pass.vcf',sample=samples),
-        #expand('../results/{sample}/final_calls/ploidy_check_report.html',sample=samples)
+        expand('../results/{sample}/final_calls/ploidy_check_report.html',sample=samples),
         '../resources/snpeff/'

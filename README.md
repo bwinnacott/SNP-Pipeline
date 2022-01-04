@@ -32,7 +32,6 @@ $ git clone https://github.com/bwinnacott/SNP_pipeline.git
 The file transfer system in place will permit access through Canopus.
 
 To verify proper configuration, run the following:
-
 ```
 # output should provide a laundry list of Snakemake parameters
 $ snakemake -h
@@ -44,7 +43,7 @@ The pipeline is set up to read input fastq files from a user specified directory
 for each project and add all associated sample fastq files to it. Once fastq files are added to the created directory, the specific sample 
 input details for the project need to be added to [this table](config/samples.tsv). More info [here](config/).
 
-Additionally, add the reference assembly file and, if running in "RNA" mode, a gene annotation file to a user specified directory 
+Additionally, add the reference assembly file and, if running in "RNA" mode or using SnpEff, a gene annotation file to a user specified directory 
 in the [resources](resources/) folder. Again, create a directory that represents the project in question (i.e., if working with mouse samples, 
 a simple directory named "mouse_GRCm39" would hold the file(s)). Once the reference indexes for a given organism are initially created, they 
 can be reused with future executions of the pipeline, without the need to recreate them (Snakemake will auto detect). 
@@ -109,9 +108,11 @@ $ srun -p <partition> --pty bash
 # the previous Snakemake command can now be executed
 ```
 
-Snakemake automatically generates, submits, and monitors job submissions to the slurm scheduler. Log files for all rules will 
-be output in a newly created "logs/" folder within the [workflow](workflow/) directory, named according to the sample name and 
-slurm job ID. All pipeline output for each sample will go to the [results](results/) folder under a newly created directory 
+*Alternatively, the snakemake command may be run in a slurm script submitted to the scheduler to avoid using the terminal multiplexer and* 
+*interactive session method for each pipeline run.*
+
+Log files for all rules will be output in a newly created "logs/" folder within the [workflow](workflow/) directory, named according to the 
+sample name and slurm job ID. All pipeline output for each sample will go to the [results](results/) folder under a newly created directory 
 named after the sample. Final variant callsets will be located in the *final_calls* directory.
 
 ## Current Limitations

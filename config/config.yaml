@@ -7,7 +7,9 @@ cores: 1
 
 ############################ Required Input ############################
 
-## placeholders for input fastq files; if not specified at command line, pipeline will not run!
+## placeholders for required arguments; if not specified here or at command line, pipeline will not run!
+## Note: these parameters may be updated manually below prior to running the pipeline (if updated here,
+## no need to add on the command line)
 reference: False
 data: False
 mode: None
@@ -21,7 +23,9 @@ use_bcftools: True
 ## set to False to prevent applying base quality score recalibration
 apply_bqsr: True
 ## set to False to prevent variant annotation using SnpEff
-apply_snpeff: True
+apply_snpeff: False
+## set to False to prevent ploidy evaluation analysis
+check_ploidy: True
 
 ############################ STAR ############################
 
