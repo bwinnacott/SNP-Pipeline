@@ -1,0 +1,141 @@
+---
+title: "SNV Analysis - Ploidy Check"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+params:
+  rmd: "ploidy_check_report.Rmd"
+output:
+  html_document
+---
+
+```{r include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(rmarkdown)
+library(formattable)
+
+# get allele frequency from vcf file
+variants <- read.table(snakemake@input[[1]],header = T)
+variants$AF <- as.numeric(sapply(strsplit(variants[,snakemake@wildcards[['sample']]],':'),'[',3))
+```
+
+```{r include=FALSE}
+# read in contig IDs and lengths for downstream analysis; calculate SNP metrics
+contig_ids <- read.table(snakemake@input[[2]])
+contig_lengths <- read.table(snakemake@input[[3]])
+contigs_data <- cbind(contig_ids,contig_lengths)
+colnames(contigs_data) <- c('Contig','Length')
+chrom_counts <- data.frame(table(variants$CHROM))
+snp_by_contig <- merge(contigs_data,chrom_counts,by.x='Contig',by.y='Var1',all.x = TRUE)
+# get data frame with all contigs (even those without SNPs) for downstream analysis
+variants_all_contigs <- right_join(variants,snp_by_contig,by = c('CHROM' = 'Contig'))
+# get SNP percentage across genome
+perc_across_genome <- (nrow(variants)/sum(snp_by_contig$Length)) * 100
+# get average SNPs per Mb
+avg_per_mb <- nrow(variants)/(sum(snp_by_contig$Length)/1e6)
+# get average SNPs per contig
+avg_per_contig <- nrow(variants)/nrow(contig_ids)
+```
+
+```{r echo=FALSE}
+snp_by_contig <- snp_by_contig[order(match(snp_by_contig$Contig,unique(variants_all_contigs$CHROM))),]
+rownames(snp_by_contig) <- NULL
+names(snp_by_contig)[names(snp_by_contig) == 'Freq'] <- 'Total_SNVs'
+formattable(snp_by_contig)
+```
+
+```{r include=FALSE}
+# get SNP positions across genome (not just position on contig)
+contig <- 1
+prev_pos <- 0
+prev_contig <- variants_all_contigs[1,'CHROM']
+prev_contig_length <- variants_all_contigs[1,'Length']
+cum_pos <- 0
+for (row in 1:nrow(variants_all_contigs)) {
+  contig_id <- variants_all_contigs[row,'CHROM']
+  pos <- variants_all_contigs[row,'POS']
+  if (is.na(pos) & is.na(prev_pos)) {
+    cum_pos <- cum_pos + prev_contig_length
+    prev_pos <- pos
+    contig <- contig + 1
+    prev_contig <- contig_id
+    prev_contig_length <- variants_all_contigs[row,'Length']
+  } else if (is.na(pos)) {
+    cum_pos <- cum_pos + (prev_contig_length - prev_pos)
+    prev_contig <- contig_id
+    contig <- contig + 1
+    prev_pos <- pos
+    prev_contig_length <- variants_all_contigs[row,'Length']
+  } else {
+    if (contig_id == prev_contig & contig == 1) {
+      prev_pos <- pos
+      cum_pos <- pos
+      variants_all_contigs[row,'Genome_pos'] <- cum_pos
+    } else if (contig_id != prev_contig & is.na(prev_pos)) {
+      cum_pos <- cum_pos + prev_contig_length + pos
+      variants_all_contigs[row,'Genome_pos'] <- cum_pos
+      prev_pos <- pos
+      contig <- contig + 1
+      prev_contig <- contig_id
+      prev_contig_length <- variants_all_contigs[row,'Length']
+    } else if (contig_id != prev_contig) {
+      cum_pos <- cum_pos + (prev_contig_length - prev_pos) + pos
+      variants_all_contigs[row,'Genome_pos'] <- cum_pos
+      prev_pos <- pos
+      contig <- contig + 1
+      prev_contig <- contig_id
+      prev_contig_length <- variants_all_contigs[row,'Length']
+    } else if (contig_id == prev_contig & contig > 1) {
+      cum_pos <- cum_pos + (pos - prev_pos)
+      variants_all_contigs[row,'Genome_pos'] <- cum_pos
+      prev_pos <- pos
+    }
+  }
+}
+```
+
+```{r include=FALSE}
+# get data for plotting the number of SNPs per Mb
+size_in_mb <- ceiling(cum_pos/1e6)
+snp_hist <- data.frame(SNP_count=rep(NA,size_in_mb))
+running_count <- 0
+for (i in 1:size_in_mb) {
+  df <- subset(variants_all_contigs,Genome_pos < (i * 1e6))
+  df <- df[complete.cases(df),]
+  snp_hist[i,'SNP_count'] <- nrow(df) - running_count
+  running_count <- running_count + (nrow(df) - running_count)
+}
+```
+
+```{r echo=FALSE}
+# plot number of variants per mb across entire genome
+ggplot(snp_hist,aes(x=seq(1:nrow(snp_hist)),y=SNP_count)) + 
+  geom_point(shape=1) + ggtitle(paste('Number of SNVs per 1 Mb Window - ',snakemake@wildcards[['sample']])) + 
+  xlab('Position (Mb)') + ylab('Number of SNVs') + geom_hline(aes(yintercept=avg_per_mb,linetype='Mean'),colour='red') + 
+  scale_linetype_manual(name = "Metric", values = c(1), guide = guide_legend(override.aes = list(color = c("red")))) + 
+  geom_text(aes(107,avg_per_mb,label = round(avg_per_mb,2),vjust = -1.5)) + 
+  theme_bw() + 
+  theme(legend.position = c(0.9,0.9))
+```
+
+```{r echo=FALSE,message=FALSE}
+# plot variant allele frequency distribution
+ggplot(variants,aes(x=AF)) + 
+  geom_histogram(color='white',fill='darkgreen') + 
+  xlab('Variant Allele Frequency') + ylab('Count') + 
+  ggtitle(paste("SNV allele frequency distribution -", snakemake@wildcards[['sample']])) + 
+  theme_bw()
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+

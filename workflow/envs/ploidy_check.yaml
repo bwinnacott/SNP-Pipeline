@@ -1,0 +1,7 @@
+channels:
+  - r
+  - conda-forge
+dependencies:
+  - r-base=4.0.3
+  - r-essentials
+  - r-formattable=0.2.1
