@@ -25,7 +25,7 @@ apply_bqsr: True
 ## set to False to prevent variant annotation using SnpEff
 apply_snpeff: False
 ## set to False to prevent ploidy evaluation analysis
-check_ploidy: True
+check_ploidy: False
 
 ############################ STAR ############################
 
@@ -133,9 +133,13 @@ nfiles: 2
 
 ############################ SnpEff Annotation ############################
 
+## default cores for SnpEff
+snpeff_cores: 4
 ## Use this parameter to specify reference genome with pre-built SnpEff database (ex: to use the pre-built human 
-## reference database, enter 'GRCh38.99' or 'GRCh37.75')
+## reference database, enter 'GRCh38.99'); to get a list of databases available for SnpEff download, 
+## run 'snpeff databases' in command line if SnpEff is installed or check in the snpEff.config file for the full 
+## list available
 ## If no pre-built database is available for your organism and wish to run SnpEff, a database can be built from 
 ## the reference files in the reference folder specified at the command line. To build a database, set this parameter 
-## to False
+## to False (NOTE: keep parameter set to False even if database has previously been built for organism of interest)
 database: False

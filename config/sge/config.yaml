@@ -8,8 +8,9 @@ cluster:
     -l h_rt={resources.time}
     -N smk-{rule}-{wildcards}
     -j y
-    -o logs/{rule}/{rule}-{wildcards}-\$JOB_ID.out
+    -o logs/{rule}/{rule}-{wildcards.sample}-\$JOB_ID.out
     -cwd
+    -b y
     -S /bin/bash
     -V
     # options to send email to user if job aborts or completes; uncomment if desired
@@ -19,7 +20,7 @@ cluster:
 # sets default resources for all jobs submitted; resources defined in rule will override these
 default-resources:
   - queue=tb.q
-  - mem_mb=10000
+  - mem_mb=20000
   - time="72:00:00"
 
 # sets maximum resources allocated to all jobs submitted at the same time

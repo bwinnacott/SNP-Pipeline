@@ -22,7 +22,7 @@ import gzip
 
 rule GetSampleInfo:
     output:
-        temp(sample_dir + '/running_pipeline.txt')
+        temp(sample_dir + '/running_pipeline_' + config['reference'] + '.csv')
     run:
         samples_df = pd.read_csv(config['samples'],sep='\t').set_index('Sample_name')
         samples = samples_df.index.tolist()
@@ -32,7 +32,7 @@ rule GetSampleInfo:
                 assert os.path.exists(sample_dir + '/' + f), (f'The file {f} associated with {sample} in "samples.tsv" is not \
 present in the specified directory ({sample_dir}). Please fix before proceeding. Exiting...')
 
-        samples_df.to_csv(sample_dir + '/running_pipeline.txt',sep = '\t')
+        samples_df.to_csv(output[0],sep = '\t')
 
 def get_resource_file(ref_dir,type=None):
     ref_exts = tuple(['.fasta','.fa'])
@@ -89,7 +89,8 @@ def is_paired(wildcards,R1,R2):
 
 def get_aligner_input(wildcards,aligner):
     target_dir = f'../../{sample_dir}' if aligner == 'bwa' else f'../../../{sample_dir}'
-    samples = pd.read_csv(sample_dir + '/running_pipeline.txt',sep = '\t',index_col=0)
+    tmp_file = '/running_pipeline_' + config['reference'] + '.csv'
+    samples = pd.read_csv(sample_dir + tmp_file,sep = '\t',index_col=0)
     R1,R2 = samples.loc[wildcards.sample,'R1'],samples.loc[wildcards.sample,'R2']
     if is_paired(wildcards,R1,R2):
         if aligner == 'star' or aligner == 'bwa':

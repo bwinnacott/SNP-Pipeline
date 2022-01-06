@@ -30,7 +30,7 @@ rule BWAIndex:
 
 rule BWAMem:
     input:
-        sample_dir + '/running_pipeline.txt',
+        sample_dir + '/running_pipeline_' + config['reference'] + '.csv',
         ref_dir + ref + '.amb',
         ref_dir + ref + '.ann',
         ref_dir + ref + '.bwt',
