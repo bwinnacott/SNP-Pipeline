@@ -1,15 +1,15 @@
 ### Cluster Configuration
-See the config file in *slurm* for details on specifying cluster submission parameters, as well as 
+See this [config file](slurm/config.yaml) within *slurm* for details on specifying cluster submission parameters, as well as 
 some general Snakemake parameters. For now, the pipeline is only configured to run on clusters using 
 the slurm scheduling manager.
 
 ### Pipeline Configuration
-See the config file for details on specifying parameters specific to individual tools used throughout 
+See this [config file](config.yaml) for details on specifying parameters specific to individual tools used throughout 
 the pipeline, as well as some general pipeline parameters. Default parameters should work for most cases; 
-however, some need to be changed more frequently such as ploidy, number of vcf files to intersect, etc.
+however, some may need to be changed more frequently such as ploidy, number of vcf files to intersect, etc.
 
 ### Sample Configuration
-Update the samples.tsv file before running an instance of the pipeline. Make sure the entries are tab separated 
+Update the [samples.tsv](samples.tsv) file before running an instance of the pipeline. Make sure the entries are tab separated 
 after modifying. Columns are defined as:
 
 * **Sample_name**: Name of a single sample; will be used as the directory name for storing pipeline output in results folder

@@ -2,6 +2,4 @@ channels:
   - bioconda
   - conda-forge
 dependencies:
-  - htslib==1.11
-  - bcftools==1.11
-  - bedops==2.4.39
+  - bcftools==1.12

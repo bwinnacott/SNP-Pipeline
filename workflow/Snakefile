@@ -1,15 +1,11 @@
 import sys
 import pandas as pd
-from pytools.persistent_dict import PersistentDict
 
 # define rules to be run locally (when submitting to cluster)
 localrules: all, GetSampleInfo
 
 # global configuration file
 configfile: "../config/config.yaml"
-
-# used for storing info between job processes within a single run, but not between different runs of workflow
-#storage = PersistentDict('pipeline_storage')
 
 # check whether a file directory was specified for the current run
 if not config['data']:
@@ -20,7 +16,7 @@ else:
 # run utilities rule to gain access to helper functions
 include: "rules/utilities.smk"
 
-# checking for program requirements; analysis will stop if any of reference directory, annotation (RNA-seq only), or sample directory are not provided
+# checking for sample reference; analysis will stop if reference directory not specified
 if not config['reference']:
     sys.exit('No reference directory provided. Exiting program...')
 else:
@@ -84,7 +80,7 @@ else:
     # target rule
     rule all:
         input:
-            expand('../results/{sample}/final_calls/final_calls_{sample}_snps_pass.vcf',sample=samples)
+            expand('../results/{sample}/final_calls/final_calls_{sample}_snps.vcf',sample=samples)
 
 # if set, apply ploidy evaluation analysis and set new pipeline target
 if config['check_ploidy']:

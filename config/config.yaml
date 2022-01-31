@@ -37,7 +37,7 @@ star_index_cores: 8
 
 ## default parameters for STAR alignment; change as desired
 outFilterType: BySJout
-outFilterMultimapNmax: 20
+outFilterMultimapNmax: 10
 alignSJoverhangMin: 8
 alignSJDBoverhangMin: 1
 outFilterMismatchNmax: 999
@@ -93,7 +93,7 @@ SOR_filter_indel: SOR > 4.0
 
 ## default parameters for Freebayes variant calling method; change as desired
 chunksize: 100000
-min_alternate_count: 5
+min_alternate_count: 2
 min_alternate_freq: 0.01
 min_coverage: 10
 min_map_qual: 20
@@ -101,33 +101,34 @@ min_base_qual: 20
 ## default cores for freebayes
 free_cores: 1
 
-## optional parameter for filtering Freebayes calls by QUAL field; default set at 0 (change as desired)
-QUAL: 0
+## optional parameter for filtering Freebayes calls by QUAL field; default set at 20 (change as desired)
+QUAL: 20
 
 ############################ Bcftools ############################
 
 ## default parameters for Bcftools variant calling method; change as desired
 ## mpileup options
 bcftools_cores: 1
-max_depth: 250
-min_MQ: 0
-min_BQ: 13
+max_depth: 300
+min_MQ: 20
+min_BQ: 20
 ## call options
 caller: -m  # either -m or -c; -m by default
 ## filter options
-qual_filter: QUAL > 20  # set to include variants above threshold
-depth_filter: DP > 10   # set to include variants above threshold
+qual_filter: QUAL > 20  # set to include variants above quality threshold
+depth_filter: DP > 10   # set to include variants above depth threshold
 
 ############################ Variant Intersection ############################
 
-## number of files variant must be at least present in to output to final call set
+## number of files variant must be at least present in to output to final call set for each mode
 ## Note: When running in DNA mode, there will be 1 vcf file generated from each caller 
 ## for each sample (i.e., if all callers are activated, 3 total vcf files will be generated). 
 ## However, if running in RNA mode, there will be 2 vcf files generated from each caller for 
 ## each sample, one per aligner (i.e., if all callers are activated, 6 total vcf files will 
-## be generated). So, if running in DNA mode, it is recommended to set this parameter to at least 
-## 2. For RNA input, setting to at least 4 is recommended.
-nfiles: 2
+## be generated). So, if running in DNA mode, it is recommended to set the DNA parameter to at least 
+## 2. For RNA input, setting the RNA parameter to at least 4 is recommended.
+nfiles_DNA_mode: 2
+nfiles_RNA_mode: 4
 ## when True, only 1 output vcf file will be written (GATK by default); when False, all files are subset and output
 #output_combined: True
 

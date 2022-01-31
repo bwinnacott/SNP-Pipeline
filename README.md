@@ -1,4 +1,4 @@
-# Single Sample Somatic Variant Calling Pipeline using Snakemake
+# Single Sample Ensemble Variant Calling Pipeline using Snakemake
 ## Overview
 This Snakemake pipeline provides an ensemble method for calling somatic SNVs in a single sample (i.e., w/out a normal match) 
 consisting of either RNA-seq or DNA-seq reads. The workflow is detailed in the shematic below.
@@ -10,7 +10,6 @@ consisting of either RNA-seq or DNA-seq reads. The workflow is detailed in the s
 * **Anaconda (or Miniconda)**
 * **Snakemake**
 * **Pandas**
-* **Pytools**
 * **Mamba**
 
 ## Installation
@@ -18,7 +17,7 @@ The pipeline currently uses conda environments to automatically deploy required 
 Ensure `conda` is available for use on your system before proceeding. To create a new environment with the above dependencies, run the following:
 ```
 # specify any environment name after -n flag
-$ conda create -n snakemake -c conda-forge -c bioconda python=3 pandas snakemake mamba pytools
+$ conda create -n snakemake -c conda-forge -c bioconda python=3 pandas snakemake mamba
 # activate the previously created environment
 $ conda activate snakemake
 ```
@@ -118,10 +117,7 @@ named after the sample. Final variant callsets will be located in the *final_cal
 ## Current Limitations
 1. Only configured for use with Slurm scheduler (can incorporate SGE if needed)
 2. The need to run Snakemake process on terminal multiplexer (i.e., screen or tmux) while it submits jobs to compute nodes
-3. Dry runs are currently non-functional due to nature of storing sample info (use of persistent dictionary) for one pipeline run. This 
-was implemented to allow running multiple pipeline instances at the same time with differing samples. Will most likely switch over to 
-storing each pipeline instance's sample info in a temporary file to match Snakemake methodology (i.e., detecting input and output files 
-from rule to rule).
+3. 
 4. Additional...
 
 ## Ongoing Development

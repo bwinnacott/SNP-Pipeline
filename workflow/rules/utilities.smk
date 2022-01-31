@@ -2,24 +2,6 @@ import os
 import re
 import gzip
 
-#rule GetSampleInfo:
-#    output:
-#        temp(sample_dir + '/running_pipeline.txt')
-#    run:
-#        with open(sample_dir + '/running_pipeline.txt','w') as f:
-#            pass
-#        
-#        samples_df = pd.read_csv(config['samples'],sep='\t').set_index('Sample_name')
-#        samples = samples_df.index.tolist()
-        #storage.store('samples',samples)
-#        for sample in samples:
-#            sample_info = samples_df.loc[sample,['R1','R2']]
-#            for f in sample_info[~pd.isna(sample_info)]:
-#                assert os.path.exists(sample_dir + '/' + f), (f'The file {f} associated with {sample} in "samples.tsv" is not \
-#present in the specified directory ({sample_dir}). Please fix before proceeding. Exiting...')
-
-#            storage.store(sample,[sample_info[0],sample_info[1]])
-
 rule GetSampleInfo:
     output:
         temp(sample_dir + '/running_pipeline_' + config['reference'] + '.csv')
@@ -73,25 +55,17 @@ def is_paired(wildcards,R1,R2):
     else:
         return True
 
-#def get_aligner_input(wildcards,aligner):
-#    target_dir = f'../../{sample_dir}' if aligner == 'bwa' else f'../../../{sample_dir}'
-#    R1,R2 = storage.fetch(wildcards.sample)
-#    if is_paired(wildcards,R1,R2):
-#        if aligner == 'star' or aligner == 'bwa':
-#            return f"{target_dir}/{R1}",f"{target_dir}/{R2}"
-#        else:
-#            return f"-1 {target_dir}/{R1} -2 {target_dir}/{R2}"
-#    else:
-#        if aligner == 'star' or aligner == 'bwa':
-#            return f"{target_dir}/{R1}"
-#        else:
-#            return f"-U {target_dir}/{R1}"
+def get_fastq_filenames(wildcards):
+    # specify temporary file for current instance of pipeline
+    tmp_file = '/running_pipeline_' + config['reference'] + '.csv'
+    # read sample information from temp file and return fastq filenames
+    samples = pd.read_csv(sample_dir + tmp_file,sep = '\t',index_col=0)
+
+    return samples.loc[wildcards.sample,'R1'],samples.loc[wildcards.sample,'R2']
 
 def get_aligner_input(wildcards,aligner):
     target_dir = f'../../{sample_dir}' if aligner == 'bwa' else f'../../../{sample_dir}'
-    tmp_file = '/running_pipeline_' + config['reference'] + '.csv'
-    samples = pd.read_csv(sample_dir + tmp_file,sep = '\t',index_col=0)
-    R1,R2 = samples.loc[wildcards.sample,'R1'],samples.loc[wildcards.sample,'R2']
+    R1,R2 = get_fastq_filenames(wildcards)
     if is_paired(wildcards,R1,R2):
         if aligner == 'star' or aligner == 'bwa':
             return f"{target_dir}/{R1}",f"{target_dir}/{R2}"
@@ -104,7 +78,7 @@ def get_aligner_input(wildcards,aligner):
             return f"-U {target_dir}/{R1}"
 
 def get_star_readfile_command(wildcards):
-    R1 = storage.fetch(wildcards.sample)[0]
+    R1 = get_fastq_filenames(wildcards)[0]
     if R1.endswith('.gz'):
         return '--readFilesCommand zcat'
     else:
@@ -128,8 +102,8 @@ def get_input_bam(wildcards,calling=False,ind=False):
     else:
         return prefix + '/bam_preprocessing/dedup_reads_' + suffix
 
-#def get_intersection_output(wildcards):
-    #if config['output_combined']:
-        #return '-w1 -o ../results/' + wildcards.sample + '/final_calls/final_calls_' + wildcards.sample + '.vcf'
-    #else:
-        #return '-p ../results/' + wildcards.sample + '/final_calls'
+def get_intersection_num(wildcards):
+    if mode == "DNA":
+        return config['nfiles_DNA_mode']
+    else:
+        return config['nfiles_RNA_mode']

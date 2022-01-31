@@ -17,22 +17,6 @@ if config['use_mutect2']:
             '--f1r2-tar-gz {output[1]} '
             '--native-pair-hmm-threads {threads}'
 
-    #rule GetPileupSummaries:
-        #input:
-            #bam = lambda wc: get_input_bam(wc,calling=True),
-            #raw_variants = '../results/{sample}/{aligner}/Mutect2/raw_variants_Mutect2_{sample}.vcf'
-        #output:
-            #'../results/{sample}/{aligner}/Mutect2/PileupTable_{sample}.tsv'
-        #conda:
-            #"../envs/gatk.yaml"
-        #threads:
-            #config['cores']
-        #shell:
-            #'gatk GetPileupSummaries -I {input.bam} '
-            #'-V {input.raw_variants} '
-            #'-L {input.raw_variants} '
-            #'-O {output}'
-
     rule LearnReadOrientationModel:
         input:
             counts = '../results/{sample}/{aligner}/Mutect2/CollectDirectionalCounts_{sample}.tar.gz'
@@ -50,6 +34,7 @@ if config['use_mutect2']:
             raw_variants = '../results/{sample}/{aligner}/Mutect2/raw_variants_Mutect2_{sample}.vcf',
             ref = ref_dir + ref
         output:
+            '../results/{sample}/{aligner}/Mutect2/filtered_Mutect2_variants_{sample}.vcf',
             '../results/{sample}/{aligner}/Mutect2/final_Mutect2_variants_{sample}.vcf'
         conda:
             "../envs/gatk.yaml"
@@ -57,7 +42,8 @@ if config['use_mutect2']:
             'gatk FilterMutectCalls -R {input.ref} '
             '-V {input.raw_variants} '
             '-ob-priors {input.read_model} '
-            '-O {output}'
+            '-O {output[0]} && '
+            'bcftools view -Ov -f PASS {output[0]} > {output[1]}'
 
 if config['use_freebayes']:
     rule Freebayes:
@@ -104,11 +90,9 @@ if config['use_bcftools']:
             max_dp = config['max_depth'],
             min_MQ = config['min_MQ'],
             min_BQ = config['min_BQ'],
-            caller = config['caller'],
-            qual_filter = config['qual_filter'],
-            depth_filter = config['depth_filter']
+            caller = config['caller']
         output:
-            '../results/{sample}/{aligner}/Bcftools/final_Bcftools_variants_{sample}.vcf'
+            '../results/{sample}/{aligner}/Bcftools/raw_variants_Bcftools_{sample}.vcf'
         conda:
             "../envs/bcftools.yaml"
         threads:
@@ -120,5 +104,19 @@ if config['use_bcftools']:
             '--min-BQ {params.min_BQ} '
             '--threads {threads} '
             '-f {input.ref} {input.bam} | '
-            'bcftools call -Ou -v {params.caller} {params.ploidy}| '
-            'bcftools filter -s LowQual -i "{params.qual_filter} & {params.depth_filter}" > {output}'
+            'bcftools call -Ov -v {params.caller} {params.ploidy}> {output}'
+
+    rule FilterBcftoolsCalls:
+        input:
+            '../results/{sample}/{aligner}/Bcftools/raw_variants_Bcftools_{sample}.vcf'
+        params:
+            qual_filter = config['qual_filter'],
+            depth_filter = config['depth_filter']
+        output:
+            '../results/{sample}/{aligner}/Bcftools/filtered_Bcftools_variants_{sample}.vcf',
+            '../results/{sample}/{aligner}/Bcftools/final_Bcftools_variants_{sample}.vcf'
+        conda:
+            "../envs/bcftools.yaml"
+        shell:
+            'bcftools filter -s LowQual -i "{params.qual_filter} & {params.depth_filter}" {input} > {output[0]} && '
+            'bcftools view -f .,PASS {output[0]} > {output[1]}'

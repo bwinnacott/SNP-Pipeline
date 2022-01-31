@@ -17,9 +17,9 @@ default-resources:
   - mem_mb=10000
   - nodes=1
   - ntasks=1
-  - time="3-00:00:00"
+  - time="5-00:00:00"
 
-# sets maximum resources allocated to all jobs submitted at the same time
+# sets maximum resources allocated to all jobs submitted in parallel
 resources:
   - cpus=30
   - mem_mb=75000
@@ -35,5 +35,6 @@ keep-going: True
 rerun-incomplete: True
 printshellcmds: True
 use-conda: True
-# set to True if removing locking mechanism
+# set to True if removing locking mechanism; if set to False, snakemake will prevent a pipeline instance 
+# from creating the same output files as another instance already running
 nolock: True
