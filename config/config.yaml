@@ -17,7 +17,7 @@ mode: None
 ############################ Overall Pipeline Parameters ############################
 
 ## defaults to applying all callers; change to False to prevent any caller from running
-use_mutect2: True
+use_haplotypecaller: True
 use_freebayes: True
 use_bcftools: True
 ## set to False to prevent applying base quality score recalibration
@@ -66,17 +66,18 @@ algorithm: bwtsw
 ## default cores for bwa alignment
 bwa_mem_cores: 8
 
-############################ GATK Workflow ############################
+############################ Base Quality Score Recalibration ############################
 
 ## set cores for tools allowing user specification
-hap_caller_cores: 8
+hap_bqsr_cores: 8
 mutect_cores: 1
 
 ## default parameters for GATK's AddOrReplaceReadGroups tool; change as needed
 pl: illumina
 pu: LANLbyDefault
 
-## default parameters for GATK's VariantFiltration -- SNPs
+## default parameters for GATK's VariantFiltration -- SNPs (Note: these filters are used for BQSR 
+## and germline calling w/HaplotypeCaller)
 QD_filter_snp: QD < 2.0
 FS_filter_snp: FS > 60.0
 MQ_filter_snp: MQ < 40.0
@@ -102,7 +103,7 @@ min_base_qual: 20
 free_cores: 1
 
 ## optional parameter for filtering Freebayes calls by QUAL field; default set at 20 (change as desired)
-QUAL: 20
+qual_filter_free: 20
 
 ############################ Bcftools ############################
 
@@ -115,8 +116,17 @@ min_BQ: 20
 ## call options
 caller: -m  # either -m or -c; -m by default
 ## filter options
-qual_filter: QUAL > 20  # set to include variants above quality threshold
-depth_filter: DP > 10   # set to include variants above depth threshold
+qual_filter_bcf: QUAL > 20  # set to include variants above quality threshold
+depth_filter_bcf: DP > 10   # set to include variants above depth threshold
+
+############################ HaplotypeCaller - GATK ############################
+
+## default cores for haplotypecaller
+hap_caller_cores: 8
+## filtering parameters for haplotypecaller; removes variant below defined threshold
+qual_filter_hapcaller: QUAL < 20
+## minimum phred-scaled confidence threshold at which variant should be called for RNA-seq data
+stand_call_conf: 20
 
 ############################ Variant Intersection ############################
 

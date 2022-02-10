@@ -40,8 +40,8 @@ exists within the specified reference directory. Exiting...')
 
 def get_callers():
     callers_set = []
-    if config['use_mutect2']:
-        callers_set.append('Mutect2')
+    if config['use_haplotypecaller']:
+        callers_set.append('HaplotypeCaller')
     if config['use_freebayes']:
         callers_set.append('Freebayes')
     if config['use_bcftools']:
@@ -101,6 +101,12 @@ def get_input_bam(wildcards,calling=False,ind=False):
         return prefix + '/bam_preprocessing/dedup_rna_reads_' + suffix 
     else:
         return prefix + '/bam_preprocessing/dedup_reads_' + suffix
+
+def get_hapcaller_rna_params(wildcards):
+    if mode == "RNA":
+        return '-stand-call-conf ' + config['stand_call_conf'] + ' --dont-use-soft-clipped-bases'
+    else:
+        return ''
 
 def get_intersection_num(wildcards):
     if mode == "DNA":

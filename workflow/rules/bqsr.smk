@@ -1,16 +1,19 @@
-rule HaplotypeCaller:
+rule HaplotypeCaller_BQSR:
     input:
         bam = get_input_bam,
         ref = ref_dir + ref
+    params:
+        ploidy = config['ploidy']
     output:
         '../results/{sample}/{aligner}/bqsr/raw_variants_{sample}.vcf'
     conda:
         "../envs/gatk.yaml"
     threads: 
-        max(config['cores'],config['hap_caller_cores'])
+        max(config['cores'],config['hap_bqsr_cores'])
     shell:
         'gatk HaplotypeCaller -R {input.ref} '
         '-I {input.bam} '
+        '-ploidy {params.ploidy} '
         '-O {output} '
         '--native-pair-hmm-threads {threads}'
 
@@ -57,18 +60,18 @@ rule VariantFiltration:
         'gatk VariantFiltration -R {input.ref} '
         '-V {input.snps_vcf} '
         '-O {output[0]} '
-        '-filter-name "QD_filter" -filter "{params.QD_filter_snp}" '
-        '-filter-name "FS_filter" -filter "{params.FS_filter_snp}" '
-        '-filter-name "MQ_filter" -filter "{params.MQ_filter_snp}" '
-        '-filter-name "SOR_filter" -filter "{params.SOR_filter_snp}" '
-        '-filter-name "MQRankSum_filter" -filter "{params.MQRankSum_filter_snp}" '
-        '-filter-name "ReadPosRankSum_filter" -filter "{params.ReadPosRankSum_filter_snp}" && '
+        '-filter "{params.QD_filter_snp}" -filter-name "QD_filter" '
+        '-filter "{params.FS_filter_snp}" -filter-name "FS_filter" '
+        '-filter "{params.MQ_filter_snp}" -filter-name "MQ_filter" '
+        '-filter "{params.SOR_filter_snp}" -filter-name "SOR_filter" '
+        '-filter "{params.MQRankSum_filter_snp}" -filter-name "MQRankSum_filter" '
+        '-filter "{params.ReadPosRankSum_filter_snp}" -filter-name "ReadPosRankSum_filter" && '
         'gatk VariantFiltration -R {input.ref} '
         '-V {input.indels_vcf} '
         '-O {output[1]} '
-        '-filter-name "QD_filter" -filter "{params.QD_filter_indel}" '
-        '-filter-name "FS_filter" -filter "{params.FS_filter_indel}" '
-        '-filter-name "SOR_filter" -filter "{params.SOR_filter_indel}"'
+        '-filter "{params.QD_filter_indel}" -filter-name "QD_filter" '
+        '-filter "{params.FS_filter_indel}" -filter-name "FS_filter" '
+        '-filter "{params.SOR_filter_indel}" -filter-name "SOR_filter"'
 
 rule SelectVariants_Pass2:
     input:
