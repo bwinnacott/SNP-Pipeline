@@ -66,7 +66,7 @@ if config['apply_bqsr']:
     include: "rules/bqsr.smk"
 
 # call and filter variants
-include: "rules/call_variants.smk"
+include: "rules/call_germline.smk"
 include: "rules/merge_variants.smk"
 
 # if set, apply variant annotation using SnpEff and set new pipeline target

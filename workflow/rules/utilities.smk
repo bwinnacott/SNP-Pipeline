@@ -17,17 +17,18 @@ present in the specified directory ({sample_dir}). Please fix before proceeding.
         samples_df.to_csv(output[0],sep = '\t')
 
 def get_resource_file(ref_dir,type=None):
-    ref_exts = tuple(['.fasta','.fa'])
+    ref_exts = tuple(['.fasta','.fa','.fna'])
     ann_exts = tuple(['.gff','.gff3','.gtf'])
     for f in os.listdir(ref_dir):
         if f.endswith(ref_exts) and type == 'fasta':
-            return f
+            if f.endswith('.gz'):
+                sys.exit('Reference file is compressed. Decompress file before restarting pipeline. Exiting...')
+            else:
+                return f
         elif f.endswith(ann_exts) and type == 'gtf':
+            if f.endswith('.gz'):
+                sys.exit('Annotation file is compressed. Decompress file before restarting pipeline. Exiting...')
             return f
-        elif f.endswith('.gz') and type == 'fasta':
-            sys.exit('Reference file is compressed. Decompress file before restarting pipeline. Exiting...')
-        elif f.endswith('.gz') and type == 'gtf':
-            sys.exit('Annotation file is compressed. Decompress file before restarting pipeline. Exiting...')
         else:
             continue
     
@@ -104,7 +105,7 @@ def get_input_bam(wildcards,calling=False,ind=False):
 
 def get_hapcaller_rna_params(wildcards):
     if mode == "RNA":
-        return '-stand-call-conf ' + config['stand_call_conf'] + ' --dont-use-soft-clipped-bases'
+        return '-stand-call-conf ' + str(config['stand_call_conf']) + ' --dont-use-soft-clipped-bases'
     else:
         return ''
 

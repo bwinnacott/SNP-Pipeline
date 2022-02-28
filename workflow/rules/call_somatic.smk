@@ -44,3 +44,4 @@ if config['use_mutect2']:
             '-ob-priors {input.read_model} '
             '-O {output[0]} && '
             'bcftools view -Ov -f PASS {output[0]} > {output[1]}'
+
