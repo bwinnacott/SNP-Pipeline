@@ -114,8 +114,8 @@ Log files for all rules will be output in a newly created "logs/" folder within 
 sample name and slurm job ID. All pipeline output for each sample will go to the [results](results/) folder under a newly created directory 
 named after the sample. Final variant callsets will be located in the *final_calls* directory.
 
-## Ongoing Development
-1. Evaluation of performance (sensitivity and precision) is underway to establish best default parameters (filtering, bqsr, etc.)
-2. Generation of summary report for user evaluation
-3. Selecting best hard filters for RNA-seq variant calling mode
-4. Additional filtering strategies???
+## Areas for Improvement
+1. Build out ensemble somatic variant calling option (i.e., using Mutect2, Lofreq, etc.) to reliably detect low VAF SNVs
+2. Investigate RNA-seq variant calling results (GIAB and simulated variants called) to establish best filtering strategies
+3. Establish dual DNA- and RNA-seq variant calling methodology (goal to identify RNA-editing sites, rescue mutations, etc.)
+4. Generation of custom summary report for user evaluation
