@@ -68,7 +68,7 @@ Gene annotation file:
 
 ```/panfs/biopan04/scratch-krusec/Scen152Z_RNAseq/Final152ZGaplessAssembly/FINAL_scenedesmus_Complete.gff3```
 
-## Analysis
+## Analysis -- GIAB Benchmarking
 
 The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against the GIAB gold 
 standard truth set (both DNA- and RNA-seq input):
@@ -133,4 +133,27 @@ for DNA and 4 or 5 caller intersection for RNA).
 | HaplotypeCaller_hisat2 | 8672 | 1564 | 11927 | 0.8472 | 0.421 | 0.5625 |
 | Intersection (4 callers) | 7347 | 499 | 13252 | 0.9364 | 0.3567 | 0.5166 |
 | Intersection (5 callers) | 6938 | 434 | 13661 | 0.9411 | 0.3368 | 0.4961 |
+
+### Initial Conclusions
+
+For the DNA results, the intersection of 2 callers seems to perform best with the highest F1 metric of 0.9922. 
+Precision was improved compared to using a single caller, while at the same time the sensitivity was not compromised. 
+This seems to be a good method to use for calling germline variants moving forward. As for the RNA results, the precision 
+is again improved when using a method taking the intersection of 4 callers compared to individual calling methods. When 
+evaluating sensitivity for an RNA-seq calling analysis, one needs to consider that not all genes are going to be expressed 
+at any given time of sample extraction, accounting for the low values. Other RNA-seq variant calling studies on the same 
+sample have shown similar low recall metrics<sup>4</sup>. However, HaplotypeCaller has an improved ability to call real variants 
+in RNA-seq data based on these results. Further investigation is required to understand why.
+
+## Analysis -- Scen DOE152Z Simulation Benchmarking
+
+The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against an experimental dataset 
+consisting of simulated SNVs (both DNA- and RNA-seq input):
+
+![GIAB methods](../../media/simulation_methods.png?raw=true)
+
+
+
+
+
 
