@@ -83,12 +83,14 @@ The flag ```-e``` is used to restrict the comparison to a set of regions. For RN
 genome stratification file containing the coding regions is specified. The above command generates an output table with the 
 following metrics:
 
+**Output:**
 
 | Threshold | True-pos-baseline | True-pos-call | False-pos | False-neg | Precision | Sensitivity | F-measure |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 6.000 | 3192886 | 3192899 | 9026 | 62491 | 0.9972 | 0.9808 | 0.9889 |
 | None | 3217514 | 3217527 | 12925 | 37863 | 0.9960 | 0.9884 | 0.9922 |
 
+**Metrics:**
 
 **True-pos-baseline:** Number of variants called in baseline VCF matching those found in experimental VCF  
 **True-pos-call:** Number of variants called in experimental VCF matching those found in baseline VCF  
