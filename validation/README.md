@@ -70,8 +70,10 @@ Gene annotation file:
 
 ## Analysis
 
+The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against the GIAB gold 
+standard truth set:
 
-
+![GIAB methods](../media/GIAB_methods.png?raw=true)
 
 
 
