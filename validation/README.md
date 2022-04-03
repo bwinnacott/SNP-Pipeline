@@ -71,11 +71,18 @@ Gene annotation file:
 ## Analysis
 
 The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against the GIAB gold 
-standard truth set:
+standard truth set (both DNA- and RNA-seq input):
 
 ![GIAB methods](../../media/GIAB_methods.png?raw=true)
 
+The RTG ```vcfeval``` tool was used to perform the comparison of the experimental callset to the baseline callset:
 
+```rtg vcfeval -b <baseline callset VCF> -c <experimental callset VCF> -e <confident regions BED file> -t <SDF of reference> -o <output directory>```
+
+| Threshold | True-pos-baseline | True-pos-call | False-pos | False-neg | Precision | Sensitivity | F-measure |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| 6.000 | 3192886 | 3192899 | 9026 | 62491 | 0.9972 | 0.9808 | 0.9889 |
+| None | 3217514 | 3217527 | 12925 | 37863 | 0.9960 | 0.9884 | 0.9922 |
 
 
 
