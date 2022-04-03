@@ -79,12 +79,16 @@ The RTG ```vcfeval``` tool was used to perform the comparison of the experimenta
 
 ```rtg vcfeval -b <baseline callset VCF> -c <experimental callset VCF> -e <confident regions BED file> -t <SDF of reference> -o <output directory>```
 
-The above command generates an output table with the following metrics:
+The flag ```-e``` is used to restrict the comparison to a set of regions. For RNA-seq evaluation, this is where the 
+genome stratification file containing the coding regions is specified. The above command generates an output table with the 
+following metrics:
+
 
 | Threshold | True-pos-baseline | True-pos-call | False-pos | False-neg | Precision | Sensitivity | F-measure |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 6.000 | 3192886 | 3192899 | 9026 | 62491 | 0.9972 | 0.9808 | 0.9889 |
 | None | 3217514 | 3217527 | 12925 | 37863 | 0.9960 | 0.9884 | 0.9922 |
+
 
 **True-pos-baseline:** Number of variants called in baseline VCF matching those found in experimental VCF  
 **True-pos-call:** Number of variants called in experimental VCF matching those found in baseline VCF  
@@ -92,7 +96,11 @@ The above command generates an output table with the following metrics:
 **False-neg:** Number of variants missed in experimental VCF that are found in the baseline VCF callset (w/in confident regions only)  
 **Precision:** TP<sub>call</sub>/(TP<sub>call</sub> + FP); where TP == true positives and FP == false positives  
 **Sensitivity:** TP<sub>baseline</sub>/(TP<sub>baseline</sub> + FN); where TP == true positives and FN == false negatives  
-**F-measure:** Harmonic mean of precision and sensitivity metrics; accuracy metric accounting for class imbalance  
+**F-measure:** (2 * SN * PPV) / (SN + PPV); Harmonic mean of precision and sensitivity metrics; accuracy metric accounting for class imbalance  
+
+This callset comparison method was applied to both DNA- and RNA-seq experimental results. The following figures show 
+the three performance metrics for each individual tool compared to their ensemble counterparts (2 or 3 caller intersection 
+for DNA and 4 or 5 caller intersection for RNA).
 
 
 
