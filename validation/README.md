@@ -97,7 +97,7 @@ genome stratification file containing the coding regions is specified.
 **False-neg:** Number of variants missed in experimental VCF that are found in the baseline VCF callset (w/in confident regions only)  
 **Precision:** TP<sub>call</sub>/(TP<sub>call</sub> + FP); where TP == true positives and FP == false positives  
 **Sensitivity:** TP<sub>baseline</sub>/(TP<sub>baseline</sub> + FN); where TP == true positives and FN == false negatives  
-**F-measure:** (2 * SN * PPV) / (SN + PPV); Harmonic mean of precision and sensitivity metrics; accuracy metric accounting for class imbalance  
+**F1:** (2 * SN * PPV) / (SN + PPV); Harmonic mean of precision and sensitivity metrics; accuracy metric accounting for class imbalance  
 
 This callset comparison method was applied to both DNA- and RNA-seq experimental results. The following figures show 
 the three performance metrics for each individual tool compared to their ensemble counterparts (2 or 3 caller intersection 
@@ -105,11 +105,32 @@ for DNA and 4 or 5 caller intersection for RNA).
 
 ### GIAB Baseline SNVs -- DNA
 
+![DNA GIAB results](../../media/GIAB_DNA_figure.png?raw=true)
 
+**Summary stats:**
 
+| Caller | TP | FP | FN | Precision | Sensitivity | F1 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Freebayes | 3116396 | 14904 | 138981 | 0.9952 | 0.9573 | 0.9759 |
+| Bcftools | 3219770 | 18080 | 35607 | 0.9944 | 0.9891 | 0.9917 |
+| HaplotypeCaller | 3205992 | 14505 | 49385 | 0.9955 | 0.9848 | 0.9901 |
+| Intersection (2 callers) | 3217514 | 12925 | 37863 | 0.996 | 0.9884 | 0.9922 |
+| Intersection (3 callers) | 3060793 | 5290 | 194584 | 0.9983 | 0.9402 | 0.9684 |
 
+### GIAB Baseline SNVs -- RNA
 
+![RNA GIAB results](../../media/GIAB_RNA_figure.png?raw=true)
 
+**Summary stats:**
 
-
+| Caller | TP | FP | FN | Precision | Sensitivity | F1 |
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| Freebayes_star | 7341 | 598 | 13258 | 0.9246 | 0.3564 | 0.5145 |
+| Bcftools_star | 7467 | 719 | 13132 | 0.9122 | 0.3625 | 0.5188 |
+| HaplotypeCaller_star | 8907 | 1806 | 11692 | 0.8314 | 0.4324 | 0.5689 |
+| Freebayes_hisat2 | 7200 | 564 | 13399 | 0.9273 | 0.3495 | 0.5077 |
+| Bcftools_hisat2 | 7116 | 560 | 13483 | 0.927 | 0.3455 | 0.5033 |
+| HaplotypeCaller_hisat2 | 8672 | 1564 | 11927 | 0.8472 | 0.421 | 0.5625 |
+| Intersection (4 callers) | 7347 | 499 | 13252 | 0.9364 | 0.3567 | 0.5166 |
+| Intersection (5 callers) | 6938 | 434 | 13661 | 0.9411 | 0.3368 | 0.4961 |
 
