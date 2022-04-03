@@ -4,9 +4,9 @@
 
 Below is a summary of the methods and initial results for the evaluation of DNA- and RNA-seq pipeline performance on 
 a mix of gold standard and simulated SNVs. The gold standard set of variants used in this analysis were derived from the 
-Genome In A Bottle (GIAB) consortium<sub>1</sub>, which were then used to benchmark calls generated from the ensemble pipeline. 
-Benchmarking in this scenario was performed using the ```vcfeval``` function provided by RTG Tools<sub>2</sub>, which enables 
-more sophisticated variant comparisons between VCF files. For variant simulation studies, the tool Somatosim<sub>3</sub> was used 
+Genome In A Bottle (GIAB) consortium<sup>1</sup>, which were then used to benchmark calls generated from the ensemble pipeline. 
+Benchmarking in this scenario was performed using the ```vcfeval``` function provided by RTG Tools<sup>2</sup>, which enables 
+more sophisticated variant comparisons between VCF files. For variant simulation studies, the tool Somatosim<sup>3</sup> was used 
 to induce SNVs in experimental BAMs of Scen DOE152z at various VAF's across a range of coverages. Precision, recall, 
 and accuracy (measure as F1) were used to quantify overall performance.
 
