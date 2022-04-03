@@ -79,10 +79,20 @@ The RTG ```vcfeval``` tool was used to perform the comparison of the experimenta
 
 ```rtg vcfeval -b <baseline callset VCF> -c <experimental callset VCF> -e <confident regions BED file> -t <SDF of reference> -o <output directory>```
 
+This command generates an output table with the following metrics:
+
 | Threshold | True-pos-baseline | True-pos-call | False-pos | False-neg | Precision | Sensitivity | F-measure |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | 6.000 | 3192886 | 3192899 | 9026 | 62491 | 0.9972 | 0.9808 | 0.9889 |
 | None | 3217514 | 3217527 | 12925 | 37863 | 0.9960 | 0.9884 | 0.9922 |
+
+**True-pos-baseline:** Number of variants called in baseline VCF matching those found in experimental VCF
+**True-pos-call:** Number of variants called in experimental VCF matching those found in baseline VCF
+**False-pos:** Number of variants called in experimental VCF that do not match the baseline VCF calls (w/in confident regions only)
+**False-neg:** Number of variants missed in experimental VCF that are found in the baseline VCF callset (w/in confident regions only)
+**Precision:** TP<sub>call</sub>/(TP<sub>call</sub> + FP); where TP == true positives and FP == false positives
+**Sensitivity:** TP<sub>baseline</sub>/(TP<sub>baseline</sub> + FN); where TP == true positives and FN == false negatives
+**F-measure:** Harmonic mean of precision and sensitivity metrics; accuracy metric accounting for class imbalance
 
 
 
