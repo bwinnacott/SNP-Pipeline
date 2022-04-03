@@ -80,8 +80,7 @@ The RTG ```vcfeval``` tool was used to perform the comparison of the experimenta
 ```rtg vcfeval -b <baseline callset VCF> -c <experimental callset VCF> -e <confident regions BED file> -t <SDF of reference> -o <output directory>```
 
 The flag ```-e``` is used to restrict the comparison to a set of regions. For RNA-seq evaluation, this is where the 
-genome stratification file containing the coding regions is specified. The above command generates an output table with the 
-following metrics:
+genome stratification file containing the coding regions is specified.
 
 **Output:**
 
