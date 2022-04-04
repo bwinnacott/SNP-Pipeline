@@ -73,7 +73,7 @@ Gene annotation file:
 The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against the GIAB gold 
 standard truth set (both DNA- and RNA-seq input):
 
-![GIAB methods](../../media/GIAB_methods.PNG?raw=true)
+![GIAB methods](../../media/GIAB_methods.png?raw=true)
 
 The RTG ```vcfeval``` tool was used to perform the comparison of the experimental callset to the baseline callset:
 
@@ -105,7 +105,7 @@ for DNA and 4 or 5 caller intersection for RNA).
 
 ### GIAB Baseline SNVs -- DNA
 
-![DNA GIAB results](../../media/GIAB_DNA_figure.PNG?raw=true)
+![DNA GIAB results](../../media/GIAB_DNA_figure.png?raw=true)
 
 **Summary stats:**
 
@@ -119,7 +119,7 @@ for DNA and 4 or 5 caller intersection for RNA).
 
 ### GIAB Baseline SNVs -- RNA
 
-![RNA GIAB results](../../media/GIAB_RNA_figure.PNG?raw=true)
+![RNA GIAB results](../../media/GIAB_RNA_figure.png?raw=true)
 
 **Summary stats:**
 
@@ -150,7 +150,7 @@ in RNA-seq data based on these results. Further investigation is required to und
 The following diagram details the methods applied to benchmarking the ensemble SNV pipeline against an experimental dataset 
 consisting of simulated SNVs (both DNA- and RNA-seq input):
 
-![GIAB methods](../../media/simulation_methods.PNG?raw=true)
+![GIAB methods](../../media/simulation_methods.png?raw=true)
 
 Since the Scen DOE152Z reads are generated from short read sequencing technology, while the reference was built from long reads, 
 it is expected there are variants present pre-simulation. In order to establish which of those variations are considered real and 
