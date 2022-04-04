@@ -152,8 +152,12 @@ consisting of simulated SNVs (both DNA- and RNA-seq input):
 
 ![GIAB methods](../../media/simulation_methods.png?raw=true)
 
+## References
 
-
+1) [GIAB](https://www.nist.gov/programs-projects/genome-bottle)
+2) [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools)
+3) [Somatosim](https://github.com/BieseckerLab/SomatoSim)
+4) [Bcbio-nextgen RNA Variant Calling Analysis](https://bcbio-nextgen.readthedocs.io/en/latest/contents/rnaseq_variants.html)
 
 
 
