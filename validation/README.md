@@ -156,7 +156,53 @@ Since the Scen DOE152Z reads are generated from short read sequencing technology
 it is expected there are variants present pre-simulation. In order to establish which of those variations are considered real and 
 error in the DNA dataset, a set of "truth" variants were identified as those called from all three of the individual variant callers 
 (i.e., intersection of all pipeline callers output). For RNA analysis, those variants were subset based on the coding regions found 
-in the associated gene annotation file. 
+in the associated gene annotation file. These sets of "truth" SNVs can be used for evaluation of precision downstream.
+
+SNVs were simulated in the Scen DOE152Z DNA- and RNA-seq reads using the following parameters w/SomatoSim:
+
+**--vaf-low:** 0.01
+**--vaf-high:** 0.5
+**--number-snv:** 5000-10000 (one number needs to be set within this range)
+**--down-sample:** set to target coverage of output BAM
+**--target-coverage:** set to target coverage of output BAM
+
+For all other parameters (minimum mapping and base quality, etc.), the default values were used. See [SomatoSim manual](https://github.com/BieseckerLab/SomatoSim/blob/master/docs/SomatoSim_UserManual.pdf) for more details.
+
+To select regions of the genome for which mutations should be simulated, [this script](random_sample_from_bed.sh) was used. It takes 
+as input a BED file and randomly selects a user defined number of regions to output for input to the SomatoSim tool. BED files for this 
+species were derived from the gene annotation file defined in the datasets section. For RNA, only coding regions were used.
+
+With all the information provided above, the following command was used to simulate SNVs in a target BAM file (**NOTE:** the input BAM 
+file needs to be analysis ready, i.e., have duplicates already marked, sorted and indexed, etc.):
+
+```somatosim -i <input.BAM> -b <input.BED> -o <output directory> --vaf-low 0.01 --vaf-high 0.5 --number-snv 5000 --random-seed <random number> --down-sample <target coverage> --target-coverage <target coverage>```
+
+The output BAM file (w/simulated SNVs) was then converted back to forward and reverse Fastq files using Samtool's ```fastq``` method. This 
+ensured the sample was subjected to the full pipeline (mapping, preprocessing, etc.):
+
+```samtools collate -u -O <bam filename> | samtools fastq -1 <paired1.fq> -2 <paired2.fq> -0 /dev/null -s /dev/null -n```
+
+Evaluation of performance was then conducted using [this script](evaluate_pipeline_performance.py). Inputs for the script include the 
+output summary file produced by Somatosim as well as an individual (or list of absolute paths to) VCF file containing the calls on the 
+simulated data. See ```./evaluate_pipeline_performance.py -h``` for more details. **NOTE:** only sensitivity is reliably set up in this 
+script; if precision is desired, update or use another custom script to compute this metric.
+
+### Scen DOE152Z Simulated SNVs -- DNA
+
+The following SNV simulation coverages were evaluated for pipeline performance (w/a VAF range from 0.01-0.5):
+
+- 25x  
+- 35x  
+- 50x  
+- 100x  
+- 150x  
+- 200x
+
+### Sensitivity Results
+
+![DNA sensitivity](../images/variant_calling_sens_intersect_2callers.png?raw=true)
+
+![All methods sensitivity](../images/variant_calling_sens_2callers_intersection.png?raw=true)
 
 ## References
 
