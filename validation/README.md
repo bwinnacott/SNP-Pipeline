@@ -152,12 +152,18 @@ consisting of simulated SNVs (both DNA- and RNA-seq input):
 
 ![GIAB methods](../../media/simulation_methods.png?raw=true)
 
+Since the Scen DOE152Z reads are generated from short read sequencing technology, while the reference was built from long reads, 
+it is expected there are variants present pre-simulation. In order to establish which of those variations are considered real and 
+error in the DNA dataset, a set of "truth" variants were identified as those called from all three of the individual variant callers 
+(i.e., intersection of all pipeline callers output). For RNA analysis, those variants were subset based on the coding regions found 
+in the associated gene annotation file. 
+
 ## References
 
 1) [GIAB](https://www.nist.gov/programs-projects/genome-bottle)
 2) [RTG Tools](https://github.com/RealTimeGenomics/rtg-tools)
-3) [Somatosim](https://github.com/BieseckerLab/SomatoSim)
-4) [Bcbio-nextgen RNA Variant Calling Analysis](https://bcbio-nextgen.readthedocs.io/en/latest/contents/rnaseq_variants.html)
+3) [SomatoSim](https://github.com/BieseckerLab/SomatoSim)
+4) [Bcbio-nextgen RNA-seq Variant Calling Analysis](https://bcbio-nextgen.readthedocs.io/en/latest/contents/rnaseq_variants.html)
 
 
 
