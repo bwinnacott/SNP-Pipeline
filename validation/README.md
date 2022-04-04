@@ -160,11 +160,11 @@ in the associated gene annotation file. These sets of "truth" SNVs can be used f
 
 SNVs were simulated in the Scen DOE152Z DNA- and RNA-seq reads using the following parameters w/SomatoSim:
 
-**--vaf-low:** 0.01
-**--vaf-high:** 0.5
-**--number-snv:** 5000-10000 (one number needs to be set within this range)
-**--down-sample:** set to target coverage of output BAM
-**--target-coverage:** set to target coverage of output BAM
+**--vaf-low:** 0.01  
+**--vaf-high:** 0.5  
+**--number-snv:** 5000-10000 (one number needs to be set within this range)  
+**--down-sample:** set to target coverage of output BAM  
+**--target-coverage:** set to target coverage of output BAM  
 
 For all other parameters (minimum mapping and base quality, etc.), the default values were used. See [SomatoSim manual](https://github.com/BieseckerLab/SomatoSim/blob/master/docs/SomatoSim_UserManual.pdf) for more details.
 
@@ -202,7 +202,38 @@ The following SNV simulation coverages were evaluated for pipeline performance (
 
 ![DNA sensitivity](../images/variant_calling_sens_intersect_2callers.png?raw=true)
 
-![All methods sensitivity](../images/variant_calling_sens_2callers_intersection.png?raw=true)
+![All methods DNA sensitivity](../images/variant_calling_sens_2callers_intersection.png?raw=true)
+
+### To Do -- Precision Calculation/Plotting
+
+### Scen DOE152Z Simulated SNVs -- RNA
+
+Again, the following SNV simulation coverages were evaluated for pipeline performance (w/a VAF range from 0.01-0.5):
+
+- 25x  
+- 35x  
+- 50x  
+- 100x  
+- 150x  
+- 200x
+
+### Sensitivity Results
+
+![RNA sensitivity](../images/variant_calling_sens_rna_intersect_4callers.png?raw=true)
+
+![All methods RNA sensitivity](../images/variant_calling_sens_rna_4callers_intersection.png?raw=true)
+
+### Initial Conclusions and Future Directions
+
+Being a germline variant detection workflow, it is not surprising to see low VAF (0.01-0.1) SNVs not detected across all methods. 
+One area for improvement of the pipeline would be to set up a similar ensemble methodology for somatic variant detection using tools 
+such as Mutect2, Lofreq, Strelka2, etc., and to add as a user option in the Snakemake workflow. Validation for such a workflow might 
+include using two of the gold standard references (i.e., HG001 and HG002) and spike-in (in silico) reads from one reference to the other 
+at differing percentages. This would simulate low VAF (somatic) SNVs in one of the references and allow evaluation of detection. Overall, 
+the RNA methods need to be further investigated to establish optimal parameters (improvement of precision/recall metrics). Furthermore, the 
+addition of a method that allows users having dual DNA- and RNA-seq datasets for a given organism to call variants that are supported across 
+datasets would be ideal. This would open opportunities for identifying RNA-editing sites or rescue mutations (i.e., SNVs that are not supported 
+in the DNA dataset, due to low coverage for example, but are supported in the RNA dataset, due to high expression of the corresponding gene). 
 
 ## References
 
