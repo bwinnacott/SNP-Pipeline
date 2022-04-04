@@ -204,8 +204,6 @@ The following SNV simulation coverages were evaluated for pipeline performance (
 
 ![All methods DNA sensitivity](../images/variant_calling_sens_2callers_intersection.png?raw=true)
 
-### To Do -- Precision Calculation/Plotting
-
 ### Scen DOE152Z Simulated SNVs -- RNA
 
 Again, the following SNV simulation coverages were evaluated for pipeline performance (w/a VAF range from 0.01-0.5):
@@ -222,6 +220,8 @@ Again, the following SNV simulation coverages were evaluated for pipeline perfor
 ![RNA sensitivity](../images/variant_calling_sens_rna_intersect_4callers.png?raw=true)
 
 ![All methods RNA sensitivity](../images/variant_calling_sens_rna_4callers_intersection.png?raw=true)
+
+### To Do -- Precision Calculation/Plotting for both DNA- and RNA-seq simulation analysis
 
 ### Initial Conclusions and Future Directions
 
