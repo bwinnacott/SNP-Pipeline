@@ -228,7 +228,7 @@ Again, the following SNV simulation coverages were evaluated for pipeline perfor
 Being a germline variant detection workflow, it is not surprising to see low VAF (0.01-0.1) SNVs not detected across all methods. 
 One area for improvement of the pipeline would be to set up a similar ensemble methodology for somatic variant detection using tools 
 such as Mutect2, Lofreq, Strelka2, etc., and to add as a user option in the Snakemake workflow. Validation for such a workflow might 
-include using two of the gold standard references (i.e., HG001 and HG002) and spike-in (in silico) reads from one reference to the other 
+include using two of the GIAB gold standard references (i.e., HG001 and HG002) and spike-in (in silico) reads from one reference to the other 
 at differing percentages. This would simulate low VAF (somatic) SNVs in one of the references and allow evaluation of detection. Overall, 
 the RNA methods need to be further investigated to establish optimal parameters (improvement of precision/recall metrics). Furthermore, the 
 addition of a method that allows users having dual DNA- and RNA-seq datasets for a given organism to call variants that are supported across 
